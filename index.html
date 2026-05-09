@@ -278,7 +278,7 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
     </div>
     <div class="fld" style="margin-bottom:0">
       <label>提示詞 / 課程描述 【注意：AI功能僅供參考輔助使用，其產生結果無法保證品質，請務必自行檢視後使用】</label>
-      <textarea id="aiPrompt" class="ai-prompt" placeholder="例如：請為一年級設計一學年的「BOOK思議」彈性學習課程，每週 1 節，主題環繞繪本閱讀，融入家庭教育與性別平等教育，並加入性別平等教育每學期6節、戶外教育每學期2節，還有家庭教育每學期2節，同時課程每學期都是21週，課程設計請以每週次為一單位進行設計，每一週的課程都要包含「引起動機」、「主要活動」和「綜合活動」。"></textarea>
+      <textarea id="aiPrompt" class="ai-prompt" placeholder="例如：請為一年級設計一學年的「BOOK思議」彈性學習課程，每週 1 節，主題環繞繪本閱讀，融入家庭教育與性別平等教育，並加入圖書館利用教育的活動。"></textarea>
     </div>
     <div class="ai-actions">
       <button class="ai-go" id="aiGoBtn" onclick="runAiGenerate()" disabled>✨ 生成並填入表單</button>
@@ -505,7 +505,6 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 
       <h4><span class="nh-num">5</span>GitHub 頁面</h4>
       <p>GitHub 專案頁面：<a href="https://kevin-tyc-dy.github.io/CURR_PLAN_GEN/" target="_blank" rel="noopener">https://kevin-tyc-dy.github.io/CURR_PLAN_GEN/</a></p>
-      <div class="ni-warn">⚠ 上方為示意連結，請於發佈時將 <code>yourname/flexible-course-tool</code> 替換為實際的 GitHub 倉庫位址。</div>
       <p>歡迎提出 issue、建議或協助優化。</p>
 
       <h4><span class="nh-num">6</span>瀏覽器使用建議</h4>
@@ -2392,7 +2391,7 @@ async function testAiKey(){
 // ── 通用呼叫：依 provider 分派，回傳純文字 ──
 async function callAiProvider(provider,apiKey,model,userPrompt,isTest){
   var sysMsg='你是一個助理，請依使用者要求回應。';
-  var maxTok=isTest?20:16000;
+  var maxTok=isTest?20:32000;
   if(provider==='openai'){
     return await callOpenAI(apiKey,model,sysMsg,userPrompt,maxTok,!isTest);
   } else if(provider==='google'){
@@ -2537,7 +2536,7 @@ function buildAiSystemPrompt(){
     '    "assessment": string                // 例：「問思討論、口說發表、學習單、實作練習」',
     '  },',
     '  "sem2": { ...同上... },',
-    '  "weeks": {                            // 鍵為 "s1_w1" ~ "s1_w20"、"s2_w1" ~ "s2_w20"，可只列要填的週',
+    '  "weeks": {                            // 鍵為 "s1_w1" ~ "s1_w21"、"s2_w1" ~ "s2_w21"',
     '    "s1_w1": {',
     '      "unit": string,                  // 單元名稱（例：「◎開心上學樂閱趣」）',
     '      "content": string,               // 課程內容（多行用 \\n）',
@@ -2552,9 +2551,11 @@ function buildAiSystemPrompt(){
     '- 議題 title 一律使用 19 項議題的「完整中文名稱」（例：「家庭教育」），不要使用簡稱。',
     '- 能力指標請使用真實合理的 12 年國教代碼格式（例：「國1-I-1」「國Ac-I-2」「家E1」）。',
     '- 學習表現／學習內容的 domain 必須為本年級可選領域之一。',
-    '- 各學期週次以 1-20 為限，第 21 週留白。',
-    '- 至少填入該學期的 issues、performances、contents、goalCognitive、goalSkill、goalAttitude、assessment，以及前 5-10 週的 weeks 內容。',
-    '- 嚴格輸出 JSON，禁止任何前後文。'
+    '- 各學期共 21 週課程，全部要排入內容。',
+    '- 必須填入兩個學期完整內容：sem1、sem2 的 issues、performances、contents、goalCognitive、goalSkill、goalAttitude、assessment 全部欄位。',
+    '- ★ weeks 必須完整輸出 42 週：上學期 s1_w1～s1_w21（共 21 週）、下學期 s2_w1～s2_w21（共 21 週），不可省略、不可只填前幾週。每一週都要有 unit、content、task、eval 內容；issueTags 視主題需要填入。',
+    '- 為節省空間，每週的 content / task / eval 可寫得簡潔（每項約 30-60 字即可），但 42 週都必須填寫。',
+    '- 嚴格輸出 JSON，禁止任何前後文、禁止 markdown code fence。'
   ].join('\n');
 }
 
@@ -2576,10 +2577,21 @@ async function runAiGenerate(){
     var raw=await callAiProvider(provider,apiKey,model,combined,false);
     aiLog('收到回應（'+raw.length+' 字元），解析 JSON…');
     var data=aiExtractJson(raw);
-    aiLog('JSON 解析成功，套用到表單…');
+    // 統計 AI 實際回傳的週次數，方便使用者察覺截斷
+    var s1Cnt=0,s2Cnt=0;
+    if(data.weeks){
+      Object.keys(data.weeks).forEach(function(k){
+        if(/^s1_w\d+$/.test(k))s1Cnt++;
+        else if(/^s2_w\d+$/.test(k))s2Cnt++;
+      });
+    }
+    aiLog('JSON 解析成功（上學期 '+s1Cnt+' 週、下學期 '+s2Cnt+' 週），套用到表單…');
+    if(s1Cnt<21||s2Cnt<21){
+      aiLog('⚠ 部分週次未生成完整（建議重新生成或改用旗艦模型）','err');
+    }
     applyAiData(data);
     aiLog('✅ 已套用到表單，請核對結果','ok');
-    toast('✨ AI 已自動填入內容！');
+    toast('✨ AI 已自動填入內容！'+(s1Cnt<21||s2Cnt<21?'（注意：週次不滿 21 週）':''));
   }catch(e){
     aiLog('❌ 失敗：'+e.message,'err');
     toast('❌ '+e.message,6000);
