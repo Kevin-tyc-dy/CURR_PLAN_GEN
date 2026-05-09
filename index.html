@@ -2991,11 +2991,11 @@ var AI_MODELS={
     {id:'gpt-4o-mini',label:'GPT-4o Mini（舊版）'}
   ],
   google:[
-    {id:'gemini-3.1-pro',label:'Gemini 3.1 Pro（旗艦）'},
-    {id:'gemini-3.1-flash',label:'Gemini 3.1 Flash'},
-    {id:'gemini-2.5-pro',label:'Gemini 2.5 Pro'},
-    {id:'gemini-2.5-flash',label:'Gemini 2.5 Flash（推薦）'},
-    {id:'gemini-2.5-flash-lite',label:'Gemini 2.5 Flash Lite（最低成本）'}
+    {id:'gemini-2.5-pro',label:'Gemini 2.5 Pro（旗艦・推薦）'},
+    {id:'gemini-2.5-flash',label:'Gemini 2.5 Flash（速度／品質均衡）'},
+    {id:'gemini-2.5-flash-lite',label:'Gemini 2.5 Flash Lite（最低成本）'},
+    {id:'gemini-3-flash-preview',label:'Gemini 3 Flash（預覽版）'},
+    {id:'gemini-2.0-flash',label:'Gemini 2.0 Flash（舊版・將下架）'}
   ],
   anthropic:[
     {id:'claude-opus-4-7',label:'Claude Opus 4.7（旗艦）'},
@@ -3056,7 +3056,7 @@ async function testAiKey(){
   document.getElementById('aiTestBtn').disabled=true;
   aiLog('驗證 '+provider+' 金鑰中…');
   try{
-    var resp=await callAiProvider(provider,apiKey,model,'回覆「OK」即可。',true);
+    var resp=await callAiProvider(provider,apiKey,model,'請用一個句子回應：「金鑰驗證成功」。',true);
     if(resp && resp.length){
       setAiKeyStatus('ok','✅ 驗證通過');
       aiKeyVerified=true;
@@ -3082,7 +3082,7 @@ async function testAiKey(){
 // ── 通用呼叫：依 provider 分派，回傳純文字 ──
 async function callAiProvider(provider,apiKey,model,userPrompt,isTest){
   var sysMsg='你是一個助理，請依使用者要求回應。';
-  var maxTok=isTest?20:32000;
+  var maxTok=isTest?100:32000;
   if(provider==='openai'){
     return await callOpenAI(apiKey,model,sysMsg,userPrompt,maxTok,!isTest);
   } else if(provider==='google'){
@@ -3128,7 +3128,15 @@ async function callGemini(apiKey,model,sys,user,maxTok,jsonMode){
   var body={
     systemInstruction:{parts:[{text:sys}]},
     contents:[{role:'user',parts:[{text:user}]}],
-    generationConfig:{maxOutputTokens:maxTok}
+    generationConfig:{maxOutputTokens:maxTok,temperature:0.7},
+    // 將安全過濾調至最寬鬆（教育課程不應觸發，但 Gemini 預設過於嚴格）
+    safetySettings:[
+      {category:'HARM_CATEGORY_HARASSMENT',threshold:'BLOCK_NONE'},
+      {category:'HARM_CATEGORY_HATE_SPEECH',threshold:'BLOCK_NONE'},
+      {category:'HARM_CATEGORY_SEXUALLY_EXPLICIT',threshold:'BLOCK_NONE'},
+      {category:'HARM_CATEGORY_DANGEROUS_CONTENT',threshold:'BLOCK_NONE'},
+      {category:'HARM_CATEGORY_CIVIC_INTEGRITY',threshold:'BLOCK_NONE'}
+    ]
   };
   if(jsonMode)body.generationConfig.responseMimeType='application/json';
   var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
@@ -3137,10 +3145,24 @@ async function callGemini(apiKey,model,sys,user,maxTok,jsonMode){
     var msg=(data.error&&(data.error.message||data.error.status))||('HTTP '+r.status);
     throw new Error(msg);
   }
+  // promptFeedback：整個 prompt 被擋下時會出現
+  if(data.promptFeedback && data.promptFeedback.blockReason){
+    throw new Error('提示詞被 Gemini 安全過濾擋下：'+data.promptFeedback.blockReason+'（可改用 OpenAI 或 Claude 重試）');
+  }
   var cand=data.candidates&&data.candidates[0];
-  if(!cand)throw new Error('Gemini 回應格式異常（無候選）');
+  if(!cand)throw new Error('Gemini 回應格式異常（無候選），原始回應：'+JSON.stringify(data).substring(0,200));
+  // finishReason：個別候選被擋下或截斷
+  var fr=cand.finishReason||'';
   var parts=(cand.content&&cand.content.parts)||[];
-  return parts.map(function(p){return p.text||''}).join('');
+  var text=parts.map(function(p){return p.text||''}).join('');
+  if(!text){
+    if(fr==='SAFETY')throw new Error('回應被 Gemini 安全過濾擋下（finishReason: SAFETY）');
+    if(fr==='RECITATION')throw new Error('Gemini 偵測到引用版權內容而中止（finishReason: RECITATION）');
+    if(fr==='MAX_TOKENS')throw new Error('輸出 token 達上限被截斷（finishReason: MAX_TOKENS），請改用其他模型或縮短提示詞');
+    if(fr==='OTHER')throw new Error('Gemini 因不明原因中止（finishReason: OTHER）');
+    throw new Error('收到空白回應（finishReason: '+(fr||'未提供')+'）');
+  }
+  return text;
 }
 
 async function callClaude(apiKey,model,sys,user,maxTok,jsonMode){
