@@ -61,6 +61,46 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 .unit-toolbar{display:flex;gap:4px;margin-bottom:3px;flex-wrap:wrap}
 .tag-btn{background:#fff5e8;border:1px solid var(--accent);color:var(--accent);border-radius:4px;padding:1px 7px;font-size:.7rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;transition:background .15s,color .15s}
 .tag-btn:hover{background:var(--accent);color:#fff}
+/* ── 單週 AI 生成 ── */
+.wk-ai-btn{background:linear-gradient(135deg,#7c3aed 0%,#2a6ec8 100%);border:none;color:#fff;border-radius:4px;padding:3px 8px;font-size:.7rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;white-space:nowrap;transition:transform .1s,box-shadow .15s;font-weight:600}
+.wk-ai-btn:hover{transform:translateY(-1px);box-shadow:0 2px 6px rgba(124,58,237,.35)}
+.wk-ai-modal .modal{max-width:880px}
+.wk-ai-section{margin-bottom:14px}
+.wk-ai-section h4{font-family:'Noto Serif TC',serif;font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.wk-ai-section h4 .wk-ai-badge{background:var(--accent);color:#fff;font-size:.66rem;padding:1px 6px;border-radius:3px;font-family:'Noto Sans TC',sans-serif;font-weight:400}
+.wk-ai-info-bar{background:#f0f6ff;border:1px solid #cce0fc;color:#2a6ec8;padding:7px 11px;border-radius:6px;font-size:.8rem;line-height:1.6;margin-bottom:12px}
+.wk-ai-info-bar b{color:#1d55a0}
+.wk-ai-current{background:#fafaf8;border:1px solid var(--light);border-radius:6px;padding:9px 11px;font-size:.78rem;color:#666;line-height:1.6;max-height:110px;overflow-y:auto}
+.wk-ai-current .lbl{color:var(--accent);font-weight:600;display:inline-block;min-width:62px;font-size:.74rem}
+.wk-ai-current .val{white-space:pre-wrap;color:#444}
+.wk-ai-current .empty{color:#bbb;font-style:italic}
+.wk-ai-desc{width:100%;min-height:78px;border:1.5px solid var(--light);border-radius:6px;padding:8px 11px;font-family:'Noto Sans TC',sans-serif;font-size:.86rem;line-height:1.6;color:var(--ink);background:var(--paper);outline:none;resize:vertical;transition:border-color .2s}
+.wk-ai-desc:focus{border-color:var(--accent2);box-shadow:0 0 0 2px #2a6ec818}
+.wk-ai-preview{background:#fefaf3;border:1.5px solid #f0d8b0;border-radius:7px;padding:11px 13px;font-size:.84rem;line-height:1.65;display:none}
+.wk-ai-preview.on{display:block}
+.wk-ai-preview-row{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #e8d8b8}
+.wk-ai-preview-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.wk-ai-preview-row .pr-lbl{font-weight:600;color:var(--accent);display:block;font-size:.78rem;margin-bottom:3px}
+.wk-ai-preview-row .pr-val{white-space:pre-wrap;color:var(--ink);background:#fff;border:1px solid #f0e0c0;border-radius:4px;padding:6px 9px;font-size:.84rem}
+.wk-ai-preview-row .pr-old{margin-top:5px;color:#999;font-size:.74rem}
+.wk-ai-preview-row .pr-old-val{white-space:pre-wrap;color:#aaa;font-size:.74rem;text-decoration:line-through;text-decoration-color:#ddd}
+.wk-ai-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.wk-ai-tag{background:#fff5e8;border:1px solid var(--accent);color:var(--accent);border-radius:3px;padding:1px 7px;font-size:.74rem}
+.wk-ai-sugg{margin-top:10px;background:#f4f8ff;border:1.5px solid #cce0fc;border-radius:7px;padding:10px 12px;display:none}
+.wk-ai-sugg.on{display:block}
+.wk-ai-sugg h5{font-size:.85rem;color:#1d55a0;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.wk-ai-sugg-list{display:flex;flex-direction:column;gap:5px}
+.wk-ai-sugg-item{display:flex;align-items:flex-start;gap:8px;padding:5px 8px;background:#fff;border:1px solid #d8e4f3;border-radius:5px;font-size:.8rem;line-height:1.55}
+.wk-ai-sugg-item input[type=checkbox]{width:auto;cursor:pointer;margin-top:3px;flex-shrink:0}
+.wk-ai-sugg-item .si-meta{color:#666;font-size:.72rem}
+.wk-ai-sugg-item .si-meta b{color:#2a6ec8}
+.wk-ai-sugg-item label{cursor:pointer;flex:1;font-size:.8rem;color:#333;margin:0;font-weight:400;display:block}
+.wk-ai-loading{display:none;text-align:center;padding:18px;color:#666;font-size:.86rem}
+.wk-ai-loading.on{display:block}
+.wk-ai-loading-spin{display:inline-block;width:18px;height:18px;border:2.5px solid #e8ddd0;border-top-color:var(--accent2);border-radius:50%;animation:wkAiSpin .8s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes wkAiSpin{to{transform:rotate(360deg)}}
+.wk-ai-err{display:none;background:#fee;border:1.5px solid #fcc;color:#c44;padding:8px 11px;border-radius:6px;font-size:.82rem;margin-top:8px}
+.wk-ai-err.on{display:block}
 /* ── 週次儲存格放大編輯 ── */
 .wk-cell{position:relative}
 .zoom-btn{position:absolute;top:2px;right:2px;background:rgba(255,255,255,.92);border:1px solid var(--light);color:#888;border-radius:4px;width:20px;height:20px;font-size:.8rem;line-height:1;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .15s,color .15s,border-color .15s;opacity:.55}
@@ -591,6 +631,52 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
       <div>
         <button class="modal-btn modal-cancel" onclick="closeModal('domainModal')">取消</button>
         <button class="modal-btn modal-ok" onclick="confirmDomainPick()">確認加入</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 單週 AI 生成 Modal -->
+<div class="modal-bg wk-ai-modal" id="wkAiModal">
+  <div class="modal">
+    <div class="modal-h">
+      <h3 id="wkAiTitle">✨ 單週 AI 生成</h3>
+      <button class="modal-x" onclick="closeWkAi()">×</button>
+    </div>
+    <div class="modal-b">
+      <div class="wk-ai-info-bar" id="wkAiInfoBar">
+        將針對 <b id="wkAiWeekLabel">本週</b> 進行 AI 內容生成。生成後可預覽，僅在你按下「✅ 套用至本週」時才會寫入；其他週次與整學期的設定不會被動到。
+      </div>
+
+      <div class="wk-ai-section">
+        <h4>📋 目前本週內容 <span class="wk-ai-badge">參考用</span></h4>
+        <div class="wk-ai-current" id="wkAiCurrent"></div>
+      </div>
+
+      <div class="wk-ai-section">
+        <h4>✍️ 請描述要怎麼產生／修改</h4>
+        <textarea id="wkAiDesc" class="wk-ai-desc" placeholder="例：把本週主題改為性別平等教育，選用《威廉的洋娃娃》繪本，引導學生討論性別刻板印象，並設計小組劇場讓孩子重新詮釋角色。"></textarea>
+      </div>
+
+      <div class="wk-ai-loading" id="wkAiLoading"><span class="wk-ai-loading-spin"></span>AI 生成中，請稍候…</div>
+      <div class="wk-ai-err" id="wkAiErr"></div>
+
+      <div class="wk-ai-preview" id="wkAiPreview">
+        <div class="wk-ai-section" style="margin-bottom:8px"><h4>🎯 AI 建議的本週內容 <span class="wk-ai-badge" style="background:var(--accent2)">預覽</span></h4></div>
+        <div id="wkAiPreviewBody"></div>
+        <div class="wk-ai-sugg" id="wkAiSugg">
+          <h5>💡 建議補充到本學期的領域／指標清單</h5>
+          <div style="font-size:.76rem;color:#666;margin-bottom:6px">勾選需要的項目；套用時會自動加入既有清單（同名領域／議題會合併在一起，重複指標自動跳過），不會刪除已存在的任何項目。</div>
+          <div class="wk-ai-sugg-list" id="wkAiSuggList"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-f">
+      <div class="modal-info" id="wkAiStatus">尚未生成</div>
+      <div>
+        <button class="modal-btn modal-cancel" onclick="closeWkAi()">關閉</button>
+        <button class="modal-btn" id="wkAiGenBtn" onclick="runWkAiGen()" style="background:linear-gradient(135deg,#7c3aed 0%,#2a6ec8 100%);color:#fff;font-weight:600">✨ 生成</button>
+        <button class="modal-btn modal-ok" id="wkAiApplyBtn" onclick="applyWkAiResult()" disabled style="opacity:.5">✅ 套用至本週</button>
       </div>
     </div>
   </div>
@@ -2460,6 +2546,333 @@ document.addEventListener('keydown',function(e){
 })();
 
 // ════════════════════════════════════════
+// 單週 AI 生成
+// ════════════════════════════════════════
+var wkAiCtx={}; // {key, span, result}
+// 開啟「單週 AI 生成」modal
+function openWkAiGen(k){
+  if(!aiKeyVerified){
+    toast('⚠ 請先到上方「AI 自動生成」區域驗證 API 金鑰',4500);
+    // 滾動到 AI 區塊
+    var aiSec=document.querySelector('.sec');
+    if(aiSec && typeof aiSec.scrollIntoView==='function')aiSec.scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+  // 先把目前正在編輯中的週次內容寫入 wkData
+  saveWk();
+  // 計算此週合併範圍
+  var m=k.match(/^s(\d)_w(\d+)$/);
+  if(!m)return;
+  var sem=parseInt(m[1]),w=parseInt(m[2]);
+  var d=wkData[k]||{unit:'',content:'',task:'',eval:'',mergeCount:0};
+  var mc=parseInt(d.mergeCount||0);
+  var span=mc>0?('第 '+w+'–'+(w+mc)+' 週'):('第 '+w+' 週');
+  wkAiCtx={key:k,sem:sem,w:w,mc:mc,span:span,result:null};
+  // 顯示週次資訊
+  document.getElementById('wkAiTitle').textContent='✨ 單週 AI 生成 — '+span+'（第 '+sem+' 學期）';
+  document.getElementById('wkAiWeekLabel').textContent='第 '+sem+' 學期・'+span;
+  // 顯示目前本週內容
+  var curHtml='';
+  function fmt(label,v){
+    v=String(v||'').trim();
+    return '<div style="margin-bottom:3px"><span class="lbl">'+eh(label)+'：</span><span class="val">'+(v?eh(v):'<span class="empty">（空白）</span>')+'</span></div>';
+  }
+  curHtml+=fmt('單元名稱',d.unit);
+  curHtml+=fmt('課程內容',d.content);
+  curHtml+=fmt('表現任務',d.task);
+  curHtml+=fmt('學習評量',d.eval);
+  document.getElementById('wkAiCurrent').innerHTML=curHtml;
+  // 重設 UI
+  document.getElementById('wkAiDesc').value='';
+  document.getElementById('wkAiPreview').classList.remove('on');
+  document.getElementById('wkAiSugg').classList.remove('on');
+  document.getElementById('wkAiPreviewBody').innerHTML='';
+  document.getElementById('wkAiSuggList').innerHTML='';
+  document.getElementById('wkAiErr').classList.remove('on');
+  document.getElementById('wkAiErr').textContent='';
+  document.getElementById('wkAiLoading').classList.remove('on');
+  document.getElementById('wkAiStatus').textContent='尚未生成';
+  var applyBtn=document.getElementById('wkAiApplyBtn');
+  applyBtn.disabled=true;applyBtn.style.opacity='.5';
+  // 開啟
+  document.getElementById('wkAiModal').classList.add('on');
+  setTimeout(function(){document.getElementById('wkAiDesc').focus();},80);
+}
+function closeWkAi(){
+  document.getElementById('wkAiModal').classList.remove('on');
+  wkAiCtx={};
+}
+// 構造單週的提示詞
+function buildWkAiPrompt(userDesc){
+  var k=wkAiCtx.key,sem=wkAiCtx.sem,w=wkAiCtx.w,mc=wkAiCtx.mc,span=wkAiCtx.span;
+  var grade=document.getElementById('grade').value||'一';
+  var stage=gradeStage(grade);
+  var courseTitle=document.getElementById('courseTitle').value||'';
+  var weeklyHours=document.getElementById('weeklyHours').value||'1節';
+  var availDomains=getAvailableDomains();
+  var domNames=availDomains.map(function(d){return d.name}).join('、');
+  var issuesNames=ISSUE_DATA.map(function(g){return g.name}).join('、');
+  // 收集當學期已有的議題／領域／指標，供 AI 對齊現況
+  var semData=collectSemData(sem);
+  var existingIssues=semData.issues.map(function(o){return o.title}).filter(function(x){return x}).join('、')||'（尚無）';
+  var existingPerfs=semData.performances.map(function(o){return o.domain}).filter(function(x){return x}).join('、')||'（尚無）';
+  var existingConts=semData.contents.map(function(o){return o.domain}).filter(function(x){return x}).join('、')||'（尚無）';
+  // 相鄰週次的單元名稱（提供脈絡）
+  function getUnitOf(s,wn){
+    var dd=wkData['s'+s+'_w'+wn];
+    if(!dd)return '';
+    return String(dd.unit||'').split('\n')[0].trim();
+  }
+  var ctxLines=[];
+  for(var i=Math.max(1,w-2);i<w;i++){var u=getUnitOf(sem,i);if(u)ctxLines.push('  - 第 '+i+' 週：'+u);}
+  for(var j=w+mc+1;j<=Math.min(21,w+mc+2);j++){var u2=getUnitOf(sem,j);if(u2)ctxLines.push('  - 第 '+j+' 週：'+u2);}
+  var ctxStr=ctxLines.length?ctxLines.join('\n'):'  （無相鄰週次資料）';
+  // 本週現有內容
+  var curD=wkData[k]||{};
+  var curStr=[
+    '  - 單元名稱：'+(curD.unit||'（空白）'),
+    '  - 課程內容：'+(curD.content||'（空白）'),
+    '  - 表現任務：'+(curD.task||'（空白）'),
+    '  - 學習評量：'+(curD.eval||'（空白）')
+  ].join('\n');
+
+  var sys=[
+    '你是台灣國民小學「彈性學習課程計畫」的設計助手。本次任務：只針對指定的「單一週次」（或合併週次）產生新的課程內容，並建議是否需要補充本學期的領域或議題指標。',
+    '',
+    '【課程脈絡】',
+    '- 課程標題：'+courseTitle,
+    '- 年級：'+grade+' 年級（學習階段 '+stage+'）',
+    '- 每週節數：'+weeklyHours,
+    '- 本週位置：第 '+sem+' 學期・'+span+'（共 '+(mc+1)+' 週'+(mc>0?' 連續單元':'')+'）',
+    '',
+    '【本學期既有清單】（請盡量沿用，避免無謂新增）',
+    '- 已選議題主標題：'+existingIssues,
+    '- 已選學習表現領域：'+existingPerfs,
+    '- 已選學習內容領域：'+existingConts,
+    '',
+    '【本週相鄰週次主題】（避免主題重疊，保持脈絡連貫）',
+    ctxStr,
+    '',
+    '【本週現有內容】',
+    curStr,
+    '',
+    '【可用資源】',
+    '- 19 項可融入議題：'+issuesNames,
+    '- 本年級可選領域：'+domNames,
+    '- 核心素養代碼：A1/A2/A3、B1/B2/B3、C1/C2/C3',
+    '- 議題指標格式：議題首字 + E + 編號（例：「家E1」「性E3」「閱E5」）',
+    '- 領域指標格式：須符合學習階段 '+stage+'（例：「國1-I-1」「國Ac-I-2」、第二階段用「II」、第三階段用「III」）',
+    '',
+    '【請只輸出符合下列 schema 的 JSON 物件，不可加 markdown code fence、不可有任何說明文字】',
+    '{',
+    '  "week": {',
+    '    "unit": string,                    // 單元名稱（不要在此包含【議題名稱】，標籤改用 issueTags 欄位）',
+    '    "content": string,                 // 課程內容；'+(mc>0?'因為合併 '+(mc+1)+' 週，內容請對應較長的活動規模':'單週活動規模即可')+'；多行用 \\n',
+    '    "task": string,                    // 表現任務（生活、學習等真實情境中的產出或行為表現）',
+    '    "eval": string,                    // 學習評量（多行用 \\n）',
+    '    "issueTags": string[]              // 本週要附加的議題完整名稱陣列（19 項其中之一；可為空陣列）',
+    '  },',
+    '  "suggestedIssues": [                 // 建議補入本學期議題清單的新指標（若已存在於既有清單則不需重複）',
+    '    { "title": string, "code": string, "text": string }   // title 為議題完整名稱、code 例「性E3」、text 為指標說明',
+    '  ],',
+    '  "suggestedPerformances": [           // 建議補入本學期「學習表現」清單的新指標',
+    '    { "domain": string, "code": string, "text": string }',
+    '  ],',
+    '  "suggestedContents": [               // 建議補入本學期「學習內容」清單的新指標',
+    '    { "domain": string, "code": string, "text": string }',
+    '  ],',
+    '  "rationale": string                  // 一段 50 字內的簡短說明：為什麼這樣設計、有對應到哪些指標',
+    '}',
+    '',
+    '【規則】',
+    '- 只回傳上述單週的內容，不要產生其他週次。',
+    '- 領域名稱必須是本年級可選領域之一；議題名稱必須是 19 項議題之一。',
+    '- suggested* 三個陣列：只列出「真正需要新增到本學期清單」的指標。若本週使用的指標已涵蓋在「既有清單」中，請不要重複列出。每個陣列若無建議可填空陣列 []。',
+    '- suggestedIssues / suggestedPerformances / suggestedContents 各陣列建議控制在 0–3 項之間，避免過度新增。',
+    '- 嚴格輸出 JSON，禁止任何前後文、禁止 markdown code fence。'
+  ].join('\n');
+  var user='【使用者本週需求】\n'+userDesc;
+  return {sys:sys,user:user};
+}
+// 主流程：呼叫 AI、解析、顯示預覽
+async function runWkAiGen(){
+  if(!aiKeyVerified){toast('⚠ 請先驗證 API 金鑰',3500);return;}
+  var desc=document.getElementById('wkAiDesc').value.trim();
+  if(!desc){toast('⚠ 請描述要怎麼產生本週內容',3500);return;}
+  var genBtn=document.getElementById('wkAiGenBtn');
+  var applyBtn=document.getElementById('wkAiApplyBtn');
+  genBtn.disabled=true;genBtn.style.opacity='.6';
+  applyBtn.disabled=true;applyBtn.style.opacity='.5';
+  document.getElementById('wkAiLoading').classList.add('on');
+  document.getElementById('wkAiErr').classList.remove('on');
+  document.getElementById('wkAiPreview').classList.remove('on');
+  document.getElementById('wkAiStatus').textContent='生成中…';
+  try{
+    var provider=document.getElementById('aiProvider').value;
+    var apiKey=document.getElementById('aiApiKey').value.trim();
+    var model=document.getElementById('aiModel').value;
+    var p=buildWkAiPrompt(desc);
+    var combined=p.sys+'\n\n'+p.user;
+    var raw=await callAiProvider(provider,apiKey,model,combined,false);
+    aiLog('單週 AI 生成 — 收到回應（'+raw.length+' 字元）');
+    var data=aiExtractJson(raw);
+    if(!data.week)throw new Error('AI 回應缺少 week 欄位');
+    wkAiCtx.result=data;
+    renderWkAiPreview(data);
+    applyBtn.disabled=false;applyBtn.style.opacity='1';
+    document.getElementById('wkAiStatus').innerHTML='✅ 生成完成，請檢視預覽';
+  }catch(e){
+    aiLog('❌ 單週 AI 生成失敗：'+e.message,'err');
+    var errEl=document.getElementById('wkAiErr');
+    errEl.textContent='❌ '+e.message;
+    errEl.classList.add('on');
+    document.getElementById('wkAiStatus').textContent='生成失敗';
+  }finally{
+    genBtn.disabled=false;genBtn.style.opacity='1';
+    document.getElementById('wkAiLoading').classList.remove('on');
+  }
+}
+// 把 AI 回傳結果渲染到預覽區
+function renderWkAiPreview(data){
+  var w=data.week||{};
+  var curD=wkData[wkAiCtx.key]||{};
+  function row(label,newVal,oldVal,extra){
+    newVal=String(newVal||'').trim();
+    oldVal=String(oldVal||'').trim();
+    var h='<div class="wk-ai-preview-row"><span class="pr-lbl">'+eh(label)+'</span>';
+    h+='<div class="pr-val">'+(newVal?eh(newVal):'<span style="color:#bbb;font-style:italic">（AI 未提供）</span>')+'</div>';
+    if(extra)h+=extra;
+    if(oldVal && oldVal!==newVal){
+      h+='<div class="pr-old">原本內容：</div><div class="pr-old-val">'+eh(oldVal)+'</div>';
+    }
+    h+='</div>';
+    return h;
+  }
+  var html='';
+  // 議題標籤
+  var tagHtml='';
+  if(Array.isArray(w.issueTags)&&w.issueTags.length){
+    var validTags=w.issueTags.filter(function(n){
+      return ISSUE_DATA.some(function(g){return g.name===n});
+    });
+    if(validTags.length){
+      tagHtml='<div class="wk-ai-tags">';
+      validTags.forEach(function(t){tagHtml+='<span class="wk-ai-tag">🏷 '+eh(t)+'</span>';});
+      tagHtml+='</div>';
+    }
+  }
+  html+=row('單元名稱',w.unit,curD.unit,tagHtml);
+  html+=row('課程內容',w.content,curD.content);
+  html+=row('表現任務',w.task,curD.task);
+  html+=row('學習評量',w.eval,curD.eval);
+  if(data.rationale){
+    html+='<div class="wk-ai-preview-row" style="background:#f8f4ec;border:1px dashed #d4c4a8;padding:6px 9px;border-radius:4px;font-size:.78rem;color:#765"><b>💭 設計說明：</b>'+eh(data.rationale)+'</div>';
+  }
+  document.getElementById('wkAiPreviewBody').innerHTML=html;
+  // 建議補入的指標
+  renderWkAiSuggestions(data);
+  document.getElementById('wkAiPreview').classList.add('on');
+}
+// 渲染「建議補入指標」清單，過濾掉已存在的
+function renderWkAiSuggestions(data){
+  var sem=wkAiCtx.sem;
+  var existingIss=getExistingIssueCodes(sem);
+  var existingPerf=getExistingDomainCodes('perf',sem);
+  var existingCont=getExistingDomainCodes('cont',sem);
+  var html='';
+  var idx=0;
+  function addItem(kind,o,exists){
+    if(!o||!o.code)return;
+    if(exists[o.code])return; // 已存在，跳過
+    idx++;
+    var id='wkai-sg-'+idx;
+    var kindLabel={iss:'議題',perf:'學習表現',cont:'學習內容'}[kind];
+    var domOrTitle=kind==='iss'?o.title:o.domain;
+    if(!domOrTitle)return;
+    html+='<div class="wk-ai-sugg-item">'
+      +'<input type="checkbox" id="'+id+'" data-kind="'+kind+'" data-payload=\''+eh(JSON.stringify({title:o.title||'',domain:o.domain||'',code:o.code,text:o.text||''}))+'\' checked>'
+      +'<label for="'+id+'"><div class="si-meta"><b>'+eh(kindLabel)+'</b>・'+eh(domOrTitle)+'</div>'
+      +'<div><b>'+eh(o.code)+'</b> '+eh(o.text||'')+'</div>'
+      +'</label></div>';
+  }
+  (data.suggestedIssues||[]).forEach(function(o){addItem('iss',o,existingIss);});
+  (data.suggestedPerformances||[]).forEach(function(o){addItem('perf',o,existingPerf);});
+  (data.suggestedContents||[]).forEach(function(o){addItem('cont',o,existingCont);});
+  var suggEl=document.getElementById('wkAiSugg');
+  if(html){
+    document.getElementById('wkAiSuggList').innerHTML=html;
+    suggEl.classList.add('on');
+  }else{
+    suggEl.classList.remove('on');
+  }
+}
+// 套用 AI 結果到單一週次
+function applyWkAiResult(){
+  var data=wkAiCtx.result;
+  if(!data||!data.week){toast('⚠ 尚無可套用的生成結果',3000);return;}
+  var k=wkAiCtx.key,sem=wkAiCtx.sem;
+  var w=data.week;
+  // 1) 寫入單一週次的 wkData，保留現有的 mergeCount
+  var existing=wkData[k]||{};
+  var unit=String(w.unit||'');
+  if(Array.isArray(w.issueTags)&&w.issueTags.length){
+    var validTags=w.issueTags.filter(function(n){
+      return ISSUE_DATA.some(function(g){return g.name===n});
+    });
+    if(validTags.length)unit=applyIssueTags(unit,validTags);
+  }
+  wkData[k]={
+    unit:unit,
+    content:String(w.content||''),
+    task:String(w.task||''),
+    eval:String(w.eval||''),
+    mergeCount:parseInt(existing.mergeCount||wkAiCtx.mc||0)
+  };
+  // 清除這一格的 ghost 狀態（因為已被 AI 內容取代）
+  ['unit','content','task','eval'].forEach(function(f){WK_GHOST_CLEARED[k+'.'+f]=true;});
+  // 2) 套用使用者勾選的「建議補入指標」
+  var checked=document.querySelectorAll('#wkAiSuggList input[type=checkbox]:checked');
+  var addedCount=0;
+  checked.forEach(function(cb){
+    try{
+      var kind=cb.dataset.kind;
+      var p=JSON.parse(cb.dataset.payload||'{}');
+      var line=(p.code?p.code+' ':'')+(p.text||'');
+      if(kind==='iss'&&p.title){
+        appendToIssueOrCreate(sem,p.title,line);addedCount++;
+      }else if(kind==='perf'&&p.domain){
+        appendToDomainOrCreate('perf',sem,p.domain,line);addedCount++;
+      }else if(kind==='cont'&&p.domain){
+        appendToDomainOrCreate('cont',sem,p.domain,line);addedCount++;
+      }
+    }catch(e){console.error('apply suggestion failed',e);}
+  });
+  // 3) 重建本學期週次表（若當前學期不一致，自動切過去顯示結果）
+  if(curSem!==sem){
+    setSem(sem); // setSem 內部已有 buildWk
+  }else{
+    buildWk();
+  }
+  // 4) 收尾
+  closeWkAi();
+  var msg='✨ 已套用至'+wkAiCtx.span;
+  if(addedCount>0)msg+='，並補入 '+addedCount+' 項指標';
+  toast(msg,4000);
+  aiLog('✅ 單週 AI 結果已套用至 '+k+'（'+wkAiCtx.span+'）'+(addedCount>0?'，補入 '+addedCount+' 項指標':''),'ok');
+}
+// 點背景關閉
+(function(){
+  var bg=document.getElementById('wkAiModal');
+  if(bg)bg.addEventListener('click',function(e){if(e.target===bg)closeWkAi();});
+})();
+// Esc 關閉
+document.addEventListener('keydown',function(e){
+  var modal=document.getElementById('wkAiModal');
+  if(!modal||!modal.classList.contains('on'))return;
+  if(e.key==='Escape'){e.preventDefault();closeWkAi();}
+});
+
+// ════════════════════════════════════════
 // 週次單元名稱：議題標籤挑選
 // ════════════════════════════════════════
 var wkIssuePickerCtx={}; // {key: 's1_w1'}
@@ -2610,7 +3023,7 @@ function buildWk(){
     var wLabel='第 '+x.w+' 週',dateLabel=x.lb;
     if(mc>0&&x.w+mc<=21){wLabel='第 '+x.w+'–'+(x.w+mc)+' 週';dateLabel=x.lb.split('-')[0]+'-'+dates[x.w+mc-1].lb.split('-')[1];}
     var canMerge=(x.w+mc)<21&&!skips['s'+curSem+'_w'+(x.w+mc+1)],canSplit=mc>0;
-    var mb='';
+    var mb='<button class="mbtn wk-ai-btn" onclick="openWkAiGen(\''+k+'\')" title="針對本週個別呼叫 AI 生成">✨ AI 生成此週</button>';
     if(canMerge)mb+='<button class="mbtn merge-btn" onclick="doMerge(\''+k+'\')">↕ 合併下週</button>';
     if(canSplit)mb+='<button class="mbtn split-btn" onclick="doSplit(\''+k+'\')">✂ 取消合併</button>';
     tr.dataset.mergeCount=mc;
