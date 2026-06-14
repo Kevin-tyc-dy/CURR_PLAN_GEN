@@ -328,7 +328,8 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
     </div>
     <div class="fld" style="margin-bottom:0">
       <label>提示詞 / 課程描述 【注意：AI功能僅供參考輔助使用，其產生結果無法保證品質，請務必自行檢視後使用】</label>
-      <textarea id="aiPrompt" class="ai-prompt" placeholder="例如：請為一年級設計一學年的「樂學樂勇」彈性學習課程，每週 1 節，主題環繞繪本閱讀，融入家庭教育、性別平等教育、戶外教育和閱讀素養教育，並加入性別平等教育每學期6節、戶外教育每學期2節，還有家庭教育每學期2節，另外每週課程都有融入閱讀素養教育，另外也要有每學期3節有關性侵害防治與3節家庭暴力防治教育，議題之間可以重覆，同時課程每學期都是21週，課程設計以一週為一單位進行設計，每一週的課程都要包含繪本的主題，還有「引起動機」、「主要活動」和「綜合活動」。"></textarea>
+      <textarea id="aiPrompt" class="ai-prompt" placeholder="請描述你想要的課程（例如年級、節數、主題、融入議題、週數與每週活動架構…）。可直接選取下方灰色範例文字複製後修改。"></textarea>
+      <button type="button" class="pick-btn" id="aiExampleCopyBtn" onclick="copyAiExample()">📋 複製範例文字</button>
     </div>
     <div class="ai-actions">
       <button class="ai-go" id="aiGoBtn" onclick="runAiGenerate()" disabled>✨ 生成並填入表單</button>
@@ -2197,6 +2198,32 @@ function setGhost(el,text){
   el.addEventListener('beforeinput',clear);
   el.addEventListener('keydown',onKey);
 }
+// 與 setGhost 類似，但「點一下／選取」不會清除預設文字，
+// 方便使用者選取、複製預設範例後再修改。
+//   ‧ 直接打字（游標未選取任何文字）→ 清空從頭輸入
+//   ‧ 先選取部分／全部文字、或按刪除鍵 → 保留內容讓使用者就地修改
+function setGhostCopyable(el,text){
+  if(!el||text==null||text==='')return;
+  el.value=text;
+  el.classList.add('is-ghost');
+  el.dataset.ghost='1';
+  var done=false;
+  function detach(){el.removeEventListener('beforeinput',onInput);}
+  function promote(){            // 轉為正式可編輯內容（保留文字）
+    if(done)return;done=true;
+    el.classList.remove('is-ghost');el.dataset.ghost='';detach();
+  }
+  function blank(){             // 清空，從頭輸入
+    if(done)return;done=true;
+    el.value='';el.classList.remove('is-ghost');el.dataset.ghost='';detach();
+  }
+  function onInput(e){
+    if(el.selectionStart!==el.selectionEnd){promote();return;}      // 已選取 → 就地修改
+    if(e.inputType&&e.inputType.indexOf('delete')===0){promote();return;} // 刪除 → 就地修改
+    blank();                                                         // 直接輸入 → 清空
+  }
+  el.addEventListener('beforeinput',onInput);
+}
 // 收集時忽略 ghost 內容
 function readVal(el){
   if(!el)return '';
@@ -3815,7 +3842,8 @@ async function runAiGenerate(){
   var provider=document.getElementById('aiProvider').value;
   var apiKey=document.getElementById('aiApiKey').value.trim();
   var model=document.getElementById('aiModel').value;
-  var userPrompt=document.getElementById('aiPrompt').value.trim();
+  var aiPromptEl=document.getElementById('aiPrompt');
+  var userPrompt=(aiPromptEl.dataset&&aiPromptEl.dataset.ghost==='1')?'':aiPromptEl.value.trim();
   if(!userPrompt){toast('⚠ 請先輸入提示詞 / 課程描述',3500);return;}
   if(!confirm('AI 生成將覆蓋目前各學期的議題、學習重點、學習目標、評量、週次規劃內容（基本資訊、年級、核心素養也可能被調整）。確定要繼續嗎？'))return;
   var btn=document.getElementById('aiGoBtn');
@@ -3921,6 +3949,32 @@ function applyAiData(data){
 
 
 // ── init ──────────────────────────────────────────────────────────
+// 提示詞 / 課程描述 預設範例文字（灰字提示與「複製範例」按鈕共用同一份）
+var AI_PROMPT_EXAMPLE='例如：請為一年級設計一學年的「樂學樂勇」彈性學習課程，每週 1 節，主題環繞繪本閱讀，融入家庭教育、性別平等教育、戶外教育和閱讀素養教育，並加入性別平等教育每學期6節、戶外教育每學期2節，還有家庭教育每學期2節，另外每週課程都有融入閱讀素養教育，另外也要有每學期3節有關性侵害防治與3節家庭暴力防治教育，議題之間可以重覆，同時課程每學期都是21週，課程設計以一週為一單位進行設計，每一週的課程都要包含繪本的主題，還有「引起動機」、「主要活動」和「綜合活動」。';
+
+// 一鍵複製預設範例文字到剪貼簿
+function copyAiExample(){
+  var ok=function(){toast('✓ 已複製範例文字，可貼上後修改',2500);};
+  var fail=function(){toast('⚠ 複製失敗，請手動選取範例文字複製',3000);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(AI_PROMPT_EXAMPLE).then(ok,function(){
+      if(legacyCopy(AI_PROMPT_EXAMPLE))ok();else fail();
+    });
+  }else{
+    if(legacyCopy(AI_PROMPT_EXAMPLE))ok();else fail();
+  }
+}
+function legacyCopy(text){
+  try{
+    var ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.top='-9999px';
+    document.body.appendChild(ta);ta.focus();ta.select();
+    var done=document.execCommand('copy');
+    document.body.removeChild(ta);
+    return done;
+  }catch(e){return false;}
+}
+
 window.onload=function(){
   // 每個區塊獨立 try/catch，避免單點錯誤導致整個 onload 中斷
   try{
@@ -3971,6 +4025,11 @@ window.onload=function(){
 
   // 初始化 AI 模型下拉（即使前面有錯也務必執行）
   try{onAiProviderChange();}catch(e){console.error('onAiProviderChange failed:',e);}
+
+  try{
+    // ── 提示詞 / 課程描述 預設範例（灰字，可選取複製後修改）──
+    setGhostCopyable(document.getElementById('aiPrompt'),AI_PROMPT_EXAMPLE);
+  }catch(e){console.error('aiPrompt ghost failed:',e);}
 };
 
 // 額外保險：若 window.onload 因外部資源（字型）載入延遲或失敗而未觸發，
