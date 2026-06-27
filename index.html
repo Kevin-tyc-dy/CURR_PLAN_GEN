@@ -139,6 +139,26 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 .gb-pdf:hover{background:#1d55a0;transform:translateY(-2px)}
 .gb:disabled{background:#aaa!important;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 .nt{font-size:.74rem;color:#888;margin-top:3px}
+/* ── 首頁三步驟使用說明 ── */
+.guide{background:linear-gradient(135deg,#fff8ef 0%,#fdf3e4 100%);border:1.5px solid var(--accent);border-radius:10px;padding:16px 20px 18px;margin-bottom:22px}
+.guide-h{font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.guide-sub{font-size:.8rem;color:#777;margin-bottom:13px}
+.guide-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.guide-step{background:#fff;border:1px solid var(--light);border-radius:8px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start}
+.guide-step .gs-num{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-family:'Noto Serif TC',serif;font-weight:700;font-size:.95rem;display:flex;align-items:center;justify-content:center}
+.guide-step .gs-txt{font-size:.83rem;line-height:1.55;color:#444}
+.guide-step .gs-txt b{color:var(--ink)}
+/* ── 載入範例按鈕 ── */
+.ex-wrap{margin-top:14px;padding-top:13px;border-top:1px dashed #e2cfb4}
+.ex-label{font-size:.8rem;color:#666;margin-bottom:7px;font-weight:500}
+.ex-row{display:flex;gap:9px;flex-wrap:wrap}
+.ex-btn{background:#fff;border:1.5px solid var(--accent2);color:var(--accent2);border-radius:6px;padding:7px 13px;font-size:.82rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:background .15s,color .15s}
+.ex-btn:hover{background:var(--accent2);color:#fff}
+/* ── 進階功能收合 ── */
+.sh-toggle{cursor:pointer;justify-content:space-between}
+.sh-toggle:hover{background:#262642}
+.sh-toggle .adv-arrow{transition:transform .25s;font-size:.82rem;opacity:.85;margin-left:auto}
+.sh-toggle.open .adv-arrow{transform:rotate(180deg)}
 .cbg{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .cbl{display:flex;align-items:center;gap:4px;font-size:.82rem;cursor:pointer}
 .cbl input{width:auto}
@@ -275,10 +295,33 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 </header>
 <div class="wrap">
 
+<!-- 三步驟使用說明 -->
+<div class="guide">
+  <div class="guide-h">🧭 三步驟，馬上開始</div>
+  <div class="guide-sub">第一次使用嗎？依照下面三步驟操作即可，不需要任何程式或 AI 設定。</div>
+  <div class="guide-steps">
+    <div class="guide-step"><div class="gs-num">1</div><div class="gs-txt"><b>填寫基本資訊</b><br>學校、學年度、年級、課程名稱與設計者。</div></div>
+    <div class="guide-step"><div class="gs-num">2</div><div class="gs-txt"><b>勾選議題與能力指標</b><br>從清單點選融入議題與領域指標，填入學習目標、評量與每週內容；<b>或</b>使用下方「進階功能：AI 自動生成」。</div></div>
+    <div class="guide-step"><div class="gs-num">3</div><div class="gs-txt"><b>檢查內容後輸出</b><br>確認各欄位無誤，按「產生 Word 檔」或「預覽／列印 PDF」。</div></div>
+  </div>
+  <div class="ex-wrap">
+    <div class="ex-label">💡 不知道怎麼填？先載入一份範例來參考：</div>
+    <div class="ex-row">
+      <button type="button" class="ex-btn" onclick="loadExample('tech')">📂 載入範例：四年級科技探索</button>
+      <button type="button" class="ex-btn" onclick="loadExample('reading')">📂 載入範例：五年級閱讀素養</button>
+      <button type="button" class="ex-btn" onclick="loadExample('project')">📂 載入範例：六年級專題研究</button>
+    </div>
+  </div>
+</div>
+
 <!-- CSV 匯入 -->
 <div class="sec">
-  <div class="sh">📥 CSV 批次匯入 <span class="bdg">適合熟悉程式操作者使用</span></div>
-  <div class="sb">
+  <div class="sh sh-toggle" onclick="toggleSec(this)">
+    <span>📥 進階功能：CSV 批次匯入 <span class="bdg">適合熟悉程式操作者使用・可不使用</span></span>
+    <span class="adv-arrow">▼</span>
+  </div>
+  <div class="sb" style="display:none">
+    <p class="nt" style="margin-bottom:11px">一般老師可直接手動填寫表單或使用上方「載入範例」，<b>不需要</b>這一區。此功能適合需要大量匯入／備份資料的進階使用者。</p>
     <div class="csv-zone" id="csvZone" ondragover="csvDrag(event,true)" ondragleave="csvDrag(event,false)" ondrop="csvDrop(event)">
       <input type="file" accept=".csv,text/csv" onchange="csvLoad(this.files[0])">
       <div class="csv-zone-icon">📂</div>
@@ -292,10 +335,14 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
   </div>
 </div>
 
-<!-- AI 自動生成 -->
-<div class="sec">
-  <div class="sh">🤖 AI 自動生成 <span class="bdg">需自備 API</span></div>
-  <div class="sb">
+<!-- AI 自動生成（進階功能・預設收合） -->
+<div class="sec" id="aiSec">
+  <div class="sh sh-toggle" id="aiSecHead" onclick="toggleAdvanced()">
+    <span>🛠 進階功能：AI 自動生成 <span class="bdg">需自備 API・可不使用</span></span>
+    <span class="adv-arrow">▼</span>
+  </div>
+  <div class="sb" id="aiSecBody" style="display:none">
+    <p class="nt" style="margin-bottom:11px">一般老師可直接手動填寫表單，<b>不需要</b>這一區。若你有 OpenAI／Gemini／Claude 的 API 金鑰，可在此讓 AI 協助產生課程初稿。</p>
     <div class="ai-warn">
       <b>⚠ 安全提醒：</b>API 金鑰只儲存於你的瀏覽器（本次工作階段），不會傳送到任何第三方伺服器，但會直接從瀏覽器呼叫對應的 AI 服務。請使用<b>個人帳號的金鑰</b>，不建議在公用電腦或共用環境下使用。關閉分頁後金鑰即清除。
     </div>
@@ -512,6 +559,9 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 
 <!-- 版權／聯絡資訊 -->
 <div class="footer-credit">
+  <div style="background:#fff4e8;border:1px solid #f0d28b;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:.82rem;color:#8a5a00;line-height:1.65">
+    ⚠ 本工具為學校自主開發之課程規劃輔助工具，<b>非教育主管機關官方系統</b>，亦非正式課程填報平台。產出文件僅供課程設計參考，正式填報請依各主管機關規定辦理。
+  </div>
   <div class="fc-title">© 桃園市八德區大勇國民小學　資訊團隊</div>
   <div>本程式由 <span class="fc-team">大勇國小資訊團隊</span> 共同開發</div>
   <div>本程式由 <span class="fc-team">AI 產生內容僅供參考，實際課程設計仍應由教師專業判斷與調整。</span></div>
@@ -585,6 +635,7 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
       <p>本工具由<b>桃園市八德區大勇國民小學資訊團隊</b>開發與維護。</p>
       <p>聯絡人：<b>張文宜</b><span class="fc-divider">｜</span><a href="mailto:taco@m2.typs.tyc.edu.tw">taco@m2.typs.tyc.edu.tw</a></p>
       <p>本工具目前屬<b>個人開發分享版本</b>，提供教育現場自由參考使用。</p>
+      <p><b>本工具為學校自主開發之課程規劃輔助工具，非教育主管機關官方系統。</b>如需對外分享，請一併說明本工具非正式填報平台，產出內容僅供課程設計參考，正式課程計畫填報仍應依各主管機關規定與格式辦理。</p>
       <p>因開發與維護時間有限，<b>不保證即時更新、功能擴充或錯誤修復</b>，敬請見諒。若有使用建議或問題回饋，歡迎來信交流。</p>
 
     </div>
@@ -3225,60 +3276,7 @@ function csvLoad(file){
       var map={};
       headers.forEach(function(h,i){map[h]=rows[1][i]||'';});
 
-      // Basic fields
-      CSV_META.forEach(function(k){if(map[k]!==undefined)setField(k,map[k]);});
-      // 年級若是非單字（例如「一年級」），保留首字
-      var gv=document.getElementById('grade').value;
-      if(gv&&gv.length>1)document.getElementById('grade').value=gv.charAt(0);
-
-      // 核心素養
-      var coreSel={A:[],B:[],C:[]},hasCoreCol=false;
-      ['A','B','C'].forEach(function(g){
-        CORE_DATA[g].forEach(function(it){
-          var k='core_'+it.code;
-          if(map[k]!==undefined){
-            hasCoreCol=true;
-            if(map[k]==='1'||map[k]==='True'||map[k]==='true'||map[k]==='■')coreSel[g].push(it.code);
-          }
-        });
-      });
-      if(hasCoreCol)setCoreSelected(coreSel);
-      // 若 CSV 沒有核心素養欄位則保持原狀
-
-      // Per-semester fields
-      for(var s=1;s<=2;s++){
-        document.getElementById('issueList'+s).innerHTML='';
-        for(var i=1;i<=10;i++){
-          var t=map['s'+s+'_issue_title_'+i]||'',ind=map['s'+s+'_issue_ind_'+i]||'';
-          if(t||ind)addIssue(s,t,ind);
-        }
-        document.getElementById('perfList'+s).innerHTML='';
-        for(var i=1;i<=10;i++){
-          var dom=map['s'+s+'_perf_domain_'+i]||'',ind=map['s'+s+'_perf_ind_'+i]||'';
-          if(dom||ind)addPerf(s,dom,ind);
-        }
-        document.getElementById('contList'+s).innerHTML='';
-        for(var i=1;i<=10;i++){
-          var dom=map['s'+s+'_cont_domain_'+i]||'',ind=map['s'+s+'_cont_ind_'+i]||'';
-          if(dom||ind)addCont(s,dom,ind);
-        }
-        setField('goalCog'+s, map['s'+s+'_goalCognitive']||'');
-        setField('goalSkill'+s, map['s'+s+'_goalSkill']||'');
-        setField('goalAtt'+s, map['s'+s+'_goalAttitude']||'');
-        setAssessment(s, map['s'+s+'_assessment']||'');
-      }
-      iCnt=0; pCnt=0; cCnt=0;
-      wkData={};
-      // CSV 匯入後不再顯示 ghost 預設範例
-      WK_GHOST={};WK_GHOST_CLEARED={};
-      for(var s=1;s<=2;s++){
-        for(var w=1;w<=21;w++){
-          var pfx='s'+s+'_w'+w;
-          var unit=map[pfx+'_unit']||'',content=map[pfx+'_content']||'',task=map[pfx+'_task']||'',ev=map[pfx+'_eval']||'',mc=parseInt(map[pfx+'_merge'])||0;
-          if(unit||content||task||ev||mc)wkData[pfx]={unit:unit,content:content,task:task,eval:ev,mergeCount:mc};
-        }
-      }
-      buildWk();
+      applyDataMap(map);
       var filled=Object.keys(map).filter(function(k){return map[k]&&map[k].trim();}).length;
       var prev=document.getElementById('csvPreview');
       prev.textContent='✅ 匯入成功！共讀取 '+filled+' 個有效欄位。\n'
@@ -3310,6 +3308,103 @@ function setField(id,val){
   } else {
     el.value=val;
   }
+}
+
+// ── 套用一份資料 map 到整個表單（CSV 匯入與「載入範例」共用） ──
+function applyDataMap(map){
+  // Basic fields
+  CSV_META.forEach(function(k){if(map[k]!==undefined)setField(k,map[k]);});
+  // 年級若是非單字（例如「一年級」），保留首字
+  var gv=document.getElementById('grade').value;
+  if(gv&&gv.length>1)document.getElementById('grade').value=gv.charAt(0);
+
+  // 核心素養
+  var coreSel={A:[],B:[],C:[]},hasCoreCol=false;
+  ['A','B','C'].forEach(function(g){
+    CORE_DATA[g].forEach(function(it){
+      var k='core_'+it.code;
+      if(map[k]!==undefined){
+        hasCoreCol=true;
+        if(map[k]==='1'||map[k]==='True'||map[k]==='true'||map[k]==='■')coreSel[g].push(it.code);
+      }
+    });
+  });
+  if(hasCoreCol)setCoreSelected(coreSel);
+
+  // Per-semester fields
+  for(var s=1;s<=2;s++){
+    document.getElementById('issueList'+s).innerHTML='';
+    for(var i=1;i<=10;i++){
+      var t=map['s'+s+'_issue_title_'+i]||'',ind=map['s'+s+'_issue_ind_'+i]||'';
+      if(t||ind)addIssue(s,t,ind);
+    }
+    document.getElementById('perfList'+s).innerHTML='';
+    for(var i=1;i<=10;i++){
+      var dom=map['s'+s+'_perf_domain_'+i]||'',ind=map['s'+s+'_perf_ind_'+i]||'';
+      if(dom||ind)addPerf(s,dom,ind);
+    }
+    document.getElementById('contList'+s).innerHTML='';
+    for(var i=1;i<=10;i++){
+      var dom=map['s'+s+'_cont_domain_'+i]||'',ind=map['s'+s+'_cont_ind_'+i]||'';
+      if(dom||ind)addCont(s,dom,ind);
+    }
+    setField('goalCog'+s, map['s'+s+'_goalCognitive']||'');
+    setField('goalSkill'+s, map['s'+s+'_goalSkill']||'');
+    setField('goalAtt'+s, map['s'+s+'_goalAttitude']||'');
+    setAssessment(s, map['s'+s+'_assessment']||'');
+  }
+  iCnt=0; pCnt=0; cCnt=0;
+  wkData={};
+  WK_GHOST={};WK_GHOST_CLEARED={};
+  for(var s=1;s<=2;s++){
+    for(var w=1;w<=21;w++){
+      var pfx='s'+s+'_w'+w;
+      var unit=map[pfx+'_unit']||'',content=map[pfx+'_content']||'',task=map[pfx+'_task']||'',ev=map[pfx+'_eval']||'',mc=parseInt(map[pfx+'_merge'])||0;
+      if(unit||content||task||ev||mc)wkData[pfx]={unit:unit,content:content,task:task,eval:ev,mergeCount:mc};
+    }
+  }
+  buildWk();
+}
+
+// ── 進階功能（AI 自動生成）收合切換 ──
+function toggleAdvanced(){
+  var head=document.getElementById('aiSecHead'),body=document.getElementById('aiSecBody');
+  if(!head||!body)return;
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  head.classList.toggle('open',!open);
+}
+
+// ── 一般區塊收合切換（點標題列收合／展開同一個 .sec 內的 .sb） ──
+function toggleSec(headEl){
+  var sec=headEl.closest('.sec');if(!sec)return;
+  var body=sec.querySelector('.sb');if(!body)return;
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  headEl.classList.toggle('open',!open);
+}
+
+// ════════════════════════════════════════
+// 載入範例課程（範例資料已內嵌於本檔，離線／file:// 直接開啟也可用）
+// ════════════════════════════════════════
+var EXAMPLE_CSV={
+  tech:"schoolName,schoolYear,grade,courseTitle,weeklyHours,designer,core_A1,core_A2,core_A3,core_B1,core_B2,core_B3,core_C1,core_C2,core_C3,s1_issue_title_1,s1_issue_ind_1,s1_issue_title_2,s1_issue_ind_2,s1_issue_title_3,s1_issue_ind_3,s1_issue_title_4,s1_issue_ind_4,s1_issue_title_5,s1_issue_ind_5,s1_issue_title_6,s1_issue_ind_6,s1_issue_title_7,s1_issue_ind_7,s1_issue_title_8,s1_issue_ind_8,s1_issue_title_9,s1_issue_ind_9,s1_issue_title_10,s1_issue_ind_10,s1_perf_domain_1,s1_perf_ind_1,s1_perf_domain_2,s1_perf_ind_2,s1_perf_domain_3,s1_perf_ind_3,s1_perf_domain_4,s1_perf_ind_4,s1_perf_domain_5,s1_perf_ind_5,s1_perf_domain_6,s1_perf_ind_6,s1_perf_domain_7,s1_perf_ind_7,s1_perf_domain_8,s1_perf_ind_8,s1_perf_domain_9,s1_perf_ind_9,s1_perf_domain_10,s1_perf_ind_10,s1_cont_domain_1,s1_cont_ind_1,s1_cont_domain_2,s1_cont_ind_2,s1_cont_domain_3,s1_cont_ind_3,s1_cont_domain_4,s1_cont_ind_4,s1_cont_domain_5,s1_cont_ind_5,s1_cont_domain_6,s1_cont_ind_6,s1_cont_domain_7,s1_cont_ind_7,s1_cont_domain_8,s1_cont_ind_8,s1_cont_domain_9,s1_cont_ind_9,s1_cont_domain_10,s1_cont_ind_10,s1_goalCognitive,s1_goalSkill,s1_goalAttitude,s1_assessment,s2_issue_title_1,s2_issue_ind_1,s2_issue_title_2,s2_issue_ind_2,s2_issue_title_3,s2_issue_ind_3,s2_issue_title_4,s2_issue_ind_4,s2_issue_title_5,s2_issue_ind_5,s2_issue_title_6,s2_issue_ind_6,s2_issue_title_7,s2_issue_ind_7,s2_issue_title_8,s2_issue_ind_8,s2_issue_title_9,s2_issue_ind_9,s2_issue_title_10,s2_issue_ind_10,s2_perf_domain_1,s2_perf_ind_1,s2_perf_domain_2,s2_perf_ind_2,s2_perf_domain_3,s2_perf_ind_3,s2_perf_domain_4,s2_perf_ind_4,s2_perf_domain_5,s2_perf_ind_5,s2_perf_domain_6,s2_perf_ind_6,s2_perf_domain_7,s2_perf_ind_7,s2_perf_domain_8,s2_perf_ind_8,s2_perf_domain_9,s2_perf_ind_9,s2_perf_domain_10,s2_perf_ind_10,s2_cont_domain_1,s2_cont_ind_1,s2_cont_domain_2,s2_cont_ind_2,s2_cont_domain_3,s2_cont_ind_3,s2_cont_domain_4,s2_cont_ind_4,s2_cont_domain_5,s2_cont_ind_5,s2_cont_domain_6,s2_cont_ind_6,s2_cont_domain_7,s2_cont_ind_7,s2_cont_domain_8,s2_cont_ind_8,s2_cont_domain_9,s2_cont_ind_9,s2_cont_domain_10,s2_cont_ind_10,s2_goalCognitive,s2_goalSkill,s2_goalAttitude,s2_assessment,s1_w1_unit,s1_w1_content,s1_w1_task,s1_w1_eval,s1_w1_merge,s1_w2_unit,s1_w2_content,s1_w2_task,s1_w2_eval,s1_w2_merge,s1_w3_unit,s1_w3_content,s1_w3_task,s1_w3_eval,s1_w3_merge,s1_w4_unit,s1_w4_content,s1_w4_task,s1_w4_eval,s1_w4_merge,s1_w5_unit,s1_w5_content,s1_w5_task,s1_w5_eval,s1_w5_merge,s1_w6_unit,s1_w6_content,s1_w6_task,s1_w6_eval,s1_w6_merge,s1_w7_unit,s1_w7_content,s1_w7_task,s1_w7_eval,s1_w7_merge,s1_w8_unit,s1_w8_content,s1_w8_task,s1_w8_eval,s1_w8_merge,s1_w9_unit,s1_w9_content,s1_w9_task,s1_w9_eval,s1_w9_merge,s1_w10_unit,s1_w10_content,s1_w10_task,s1_w10_eval,s1_w10_merge,s1_w11_unit,s1_w11_content,s1_w11_task,s1_w11_eval,s1_w11_merge,s1_w12_unit,s1_w12_content,s1_w12_task,s1_w12_eval,s1_w12_merge,s1_w13_unit,s1_w13_content,s1_w13_task,s1_w13_eval,s1_w13_merge,s1_w14_unit,s1_w14_content,s1_w14_task,s1_w14_eval,s1_w14_merge,s1_w15_unit,s1_w15_content,s1_w15_task,s1_w15_eval,s1_w15_merge,s1_w16_unit,s1_w16_content,s1_w16_task,s1_w16_eval,s1_w16_merge,s1_w17_unit,s1_w17_content,s1_w17_task,s1_w17_eval,s1_w17_merge,s1_w18_unit,s1_w18_content,s1_w18_task,s1_w18_eval,s1_w18_merge,s1_w19_unit,s1_w19_content,s1_w19_task,s1_w19_eval,s1_w19_merge,s1_w20_unit,s1_w20_content,s1_w20_task,s1_w20_eval,s1_w20_merge,s1_w21_unit,s1_w21_content,s1_w21_task,s1_w21_eval,s1_w21_merge,s2_w1_unit,s2_w1_content,s2_w1_task,s2_w1_eval,s2_w1_merge,s2_w2_unit,s2_w2_content,s2_w2_task,s2_w2_eval,s2_w2_merge,s2_w3_unit,s2_w3_content,s2_w3_task,s2_w3_eval,s2_w3_merge,s2_w4_unit,s2_w4_content,s2_w4_task,s2_w4_eval,s2_w4_merge,s2_w5_unit,s2_w5_content,s2_w5_task,s2_w5_eval,s2_w5_merge,s2_w6_unit,s2_w6_content,s2_w6_task,s2_w6_eval,s2_w6_merge,s2_w7_unit,s2_w7_content,s2_w7_task,s2_w7_eval,s2_w7_merge,s2_w8_unit,s2_w8_content,s2_w8_task,s2_w8_eval,s2_w8_merge,s2_w9_unit,s2_w9_content,s2_w9_task,s2_w9_eval,s2_w9_merge,s2_w10_unit,s2_w10_content,s2_w10_task,s2_w10_eval,s2_w10_merge,s2_w11_unit,s2_w11_content,s2_w11_task,s2_w11_eval,s2_w11_merge,s2_w12_unit,s2_w12_content,s2_w12_task,s2_w12_eval,s2_w12_merge,s2_w13_unit,s2_w13_content,s2_w13_task,s2_w13_eval,s2_w13_merge,s2_w14_unit,s2_w14_content,s2_w14_task,s2_w14_eval,s2_w14_merge,s2_w15_unit,s2_w15_content,s2_w15_task,s2_w15_eval,s2_w15_merge,s2_w16_unit,s2_w16_content,s2_w16_task,s2_w16_eval,s2_w16_merge,s2_w17_unit,s2_w17_content,s2_w17_task,s2_w17_eval,s2_w17_merge,s2_w18_unit,s2_w18_content,s2_w18_task,s2_w18_eval,s2_w18_merge,s2_w19_unit,s2_w19_content,s2_w19_task,s2_w19_eval,s2_w19_merge,s2_w20_unit,s2_w20_content,s2_w20_task,s2_w20_eval,s2_w20_merge,s2_w21_unit,s2_w21_content,s2_w21_task,s2_w21_eval,s2_w21_merge\n桃園市八德區大勇國民小學,115,五,科技探索,1節,四年級教學團隊,0,0,1,1,1,0,1,1,0,家庭教育,\"家E1 認識家庭組成的多元性與變化。\n家E2 學習與家人有效溝通及互動。\",性別平等教育,\"性E1 認識性別特質的多元性。\n性E2 學習尊重不同性別者的選擇與發展。\n性E3 辨識並處理性騷擾/性霸凌/性侵害情境。\",戶外教育,\"戶E1 認識戶外環境的特性與資源。\n戶E2 學習在戶外活動中維護安全。\",資訊教育,\"資E1 認識資訊科技在生活中的應用。\n資E2 學習正確使用資訊科技產品。\n資E3 了解網路禮儀與資訊安全。\",科技教育,\"科E1 認識科技產品的設計與功能。\n科E2 學習簡單的科技操作與應用。\n科E3 了解科技發展對生活與環境的影響。\",安全教育,\"安E1 認識生活中的危險情境與預防。\n安E2 學習求助與保護自己。\n安E3 了解災害的種類與應變措施。\",,,,,,,,,國語文,\"國Ac-II-1-1 理解文本內容與主旨\n國Ad-II-1-1 運用口語表達想法\",自然科學,\"自Ac-II-1-1 透過觀察與操作，發現自然現象的規律\n自Ad-II-1-1 運用簡單工具紀錄與呈現觀察結果\",綜合活動,\"綜Ac-II-1-1 學習與人合作，完成團體任務\n綜Ad-II-1-1 培養規劃與執行活動的能力\",健康與體育,健Ae-II-1-1 學習保護自己及他人的安全,,,,,,,,,,,,,國語文,國Ae-II-1-1 運用資訊科技蒐集、整理與呈現資料,數學,數-E-B1-1 運用數學解決生活中的簡單問題,自然科學,自-E-C1-1 運用科學方法探究問題,綜合活動,\"綜-E-A1-1 培養自我認識與發展潛能\n綜-E-B1-1 學習人際互動與團隊合作\",藝術,藝-E-A1-1 探索藝術媒材與形式，進行創作,,,,,,,,,,,\"1. 認識生活中常見的科技應用與數位工具。\n2. 了解基礎的資訊安全概念及網路禮儀。\n3. 辨識科技產品的功能與潛在風險。\n4. 學習運用簡單的邏輯思考解決問題。\n5. 認識性別平等、家庭和戶外活動中科技應用的概念。\",\"1. 操作平板、電腦等數位工具進行基本資料輸入與應用。\n2. 運用簡報、繪圖工具表達想法與創作。\n3. 進行簡易的程式積木操作，理解序列與循環概念。\n4. 蒐集並整理生活中的科技資訊。\n5. 透過數位工具與同儕進行協作與溝通。\",\"1. 培養對科技學習的好奇心與探索精神。\n2. 建立負責任的科技使用態度與倫理觀念。\n3. 欣賞科技帶來的便利性，並思考其影響。\n4. 樂於與他人分享科技學習經驗與成果。\n5. 重視資訊安全與個人隱私保護。\",問思討論、口說發表、學習單、實作練習、作品展示、情境演練,家庭教育,\"家E1 認識家庭組成的多元性與變化。\n家E2 學習與家人有效溝通及互動。\",性別平等教育,\"性E1 認識性別特質的多元性。\n性E2 學習尊重不同性別者的選擇與發展。\n性E3 辨識並處理性騷擾/性霸凌/性侵害情境。\",戶外教育,\"戶E1 認識戶外環境的特性與資源。\n戶E2 學習在戶外活動中維護安全。\",資訊教育,\"資E1 認識資訊科技在生活中的應用。\n資E2 學習正確使用資訊科技產品。\n資E3 了解網路禮儀與資訊安全。\",科技教育,\"科E1 認識科技產品的設計與功能。\n科E2 學習簡單的科技操作與應用。\n科E3 了解科技發展對生活與環境的影響。\",安全教育,\"安E1 認識生活中的危險情境與預防。\n安E2 學習求助與保護自己。\n安E3 了解災害的種類與應變措施。\",環境教育,\"環E1 認識環境保護的重要性。\n環E2 學習在日常生活中實踐環境友善行為。\",,,,,,,國語文,\"國Ac-II-1-1 理解文本內容與主旨\n國Ad-II-1-1 運用口語表達想法\",自然科學,\"自Ac-II-1-1 透過觀察與操作，發現自然現象的規律\n自Ad-II-1-1 運用簡單工具紀錄與呈現觀察結果\",綜合活動,\"綜Ac-II-1-1 學習與人合作，完成團體任務\n綜Ad-II-1-1 培養規劃與執行活動的能力\",健康與體育,健Ae-II-1-1 學習保護自己及他人的安全,,,,,,,,,,,,,國語文,國Ae-II-1-1 運用資訊科技蒐集、整理與呈現資料,數學,數-E-B1-1 運用數學解決生活中的簡單問題,自然科學,自-E-C1-1 運用科學方法探究問題,綜合活動,\"綜-E-A1-1 培養自我認識與發展潛能\n綜-E-B1-1 學習人際互動與團隊合作\",藝術,藝-E-A1-1 探索藝術媒材與形式，進行創作,,,,,,,,,,,\"1. 理解數位足跡與網路隱私的重要性。\n2. 認識科技在不同領域（如環保、醫療）的應用。\n3. 學習分析問題並運用科技工具設計解決方案。\n4. 了解人工智慧的基本概念及其在生活中的應用。\n5. 深化對性別、家庭、安全議題與科技結合的認識。\",\"1. 運用線上協作工具完成小組專題報告。\n2. 設計並製作簡單的數位故事或多媒體作品。\n3. 操作影像/聲音紀錄工具，編輯並呈現內容。\n4. 運用資料整理表格分析簡單數據。\n5. 提出創意方案，並利用科技工具進行原型製作或模擬。\",\"1. 培養獨立思考與批判性思考能力，不盲從科技。\n2. 勇於嘗試新科技，並從失敗中學習。\n3. 關懷社會議題，思考科技如何貢獻於永續發展。\n4. 尊重他人隱私與智慧財產權。\n5. 積極參與科技學習活動，並展現團隊合作精神。\",問思討論、口說發表、學習單、實作練習、作品展示、情境演練,\"◎科技與生活\n【資訊教育】\n【科技教育】\",引起動機：討論生活中哪些東西是科技產品。主要活動：分組分享自己使用過的科技產品。綜合活動：繪製「我的科技生活」心智圖。,列舉並分享三種生活中的科技應用。,\"課堂發表\n心智圖\",0,\"◎平板電腦初體驗\n【資訊教育】\n【科技教育】\n【安全教育】\",引起動機：介紹平板電腦的基礎功能。主要活動：學習平板基本操作、開啟應用程式。綜合活動：使用繪圖軟體畫出喜歡的科技產品。,成功操作平板電腦開啟繪圖程式並完成簡易繪圖。,\"實作觀察\n作品呈現\",0,\"◎網路禮儀與安全\n【資訊教育】\n【安全教育】\n【性別平等教育】\n【家庭教育】\",引起動機：討論上網的經驗與注意事項。主要活動：認識網路禮儀、網路霸凌與隱私保護。綜合活動：角色扮演模擬網路情境。,編寫三條網路禮儀守則。,\"問思討論\n角色扮演\",0,\"◎簡報設計小達人\n【資訊教育】\n【科技教育】\",引起動機：欣賞有趣的簡報範例。主要活動：學習簡報軟體基本操作、製作個人簡報。綜合活動：分享我的科技夢想簡報。,製作一份包含圖片與文字的簡報。,\"實作評量\n作品發表\",0,\"◎生活中的發明家\n【科技教育】\n【性別平等教育】\",引起動機：介紹歷史上著名的科技發明。主要活動：分組討論生活中的不便，發想解決方案。綜合活動：提出一個小發明點子。,提出一個改善生活的科技發明點子。,\"小組討論\n創意發想\",0,\"◎我的第一個程式\n【資訊教育】\n【科技教育】\",引起動機：介紹程式設計的基本概念。主要活動：學習使用Scratch Jr.等積木程式。綜合活動：完成一個簡單的動畫或遊戲。,利用積木程式設計一個角色移動的動畫。,\"實作評量\n作品展示\",0,\"◎影像與聲音紀錄\n【資訊教育】\n【科技教育】\",引起動機：欣賞有趣的短影片。主要活動：學習使用平板錄影、錄音功能。綜合活動：拍攝一段班級活動短片。,錄製一段1分鐘的班級活動介紹影片。,\"實作評量\n作品分享\",0,\"◎數位公民素養\n【資訊教育】\n【科技教育】\n【安全教育】\n【性別平等教育】\",引起動機：討論網路上的不實訊息。主要活動：分辨真假訊息、尊重智慧財產權。綜合活動：討論科技使用的道德規範。,列舉兩種辨識不實訊息的方法。,\"問思討論\n學習單\",0,\"◎科技助我探索自然\n【戶外教育】\n【資訊教育】\n【科技教育】\",引起動機：介紹戶外觀察的科技工具。主要活動：利用平板或手機進行戶外植物拍照紀錄。綜合活動：分享戶外觀察結果。,使用數位工具紀錄三種戶外植物特徵。,\"實作評量\n觀察紀錄\",0,\"◎科技不分你我他\n【性別平等教育】\n【科技教育】\",引起動機：討論科技領域中的性別刻板印象。主要活動：介紹不同性別的科技工作者。綜合活動：分享自己對科技職業的想像。,說出三位不同性別的科技領域人士或其貢獻。,\"課堂發表\n討論\",0,\"◎數位家庭生活與尊重\n【家庭教育】\n【資訊教育】\n【科技教育】\n【安全教育】\",引起動機：討論家庭中如何使用科技產品。主要活動：分享家庭科技使用經驗，討論數位工具在家庭中的應用，並學習尊重家人數位隱私與空間。綜合活動：製作家庭科技使用公約，包含尊重與避免數位控制的約定。,製作一份家庭科技使用公約，包含至少三條約定及尊重數位隱私的內容。,\"學習單\n小組討論\",0,\"◎網路交友安全\n【安全教育】\n【資訊教育】\n【性別平等教育】\",引起動機：討論網路交友的風險。主要活動：認識網路交友的潛在危險與自我保護。綜合活動：演練遇到陌生人邀約的應對方式。,說出三項網路交友的自我保護原則。,\"問思討論\n情境演練\",0,\"◎線上協作小組\n【資訊教育】\n【科技教育】\n【家庭教育】\n【安全教育】\",引起動機：介紹線上協作工具。主要活動：學習使用線上共用文件或白板，討論數位溝通的禮儀。綜合活動：分組完成一個簡單的線上協作任務，並討論如何避免數位言語衝突。,與組員共同完成一份線上協作文件，並提出一項數位溝通禮儀。,\"實作評量\n成果展示\",0,\"◎我的資料庫\n【資訊教育】\n【科技教育】\",引起動機：討論如何找到想要的資訊。主要活動：學習使用搜尋引擎、簡易表格整理資料。綜合活動：蒐集並整理某項科技產品的資訊。,蒐集並用表格整理三種智慧型手機的規格。,\"實作評量\n學習單\",0,\"◎數位藝術創作\n【資訊教育】\n【科技教育】\",引起動機：欣賞數位藝術作品。主要活動：運用繪圖軟體或App進行數位創作。綜合活動：分享我的數位藝術作品。,運用數位繪圖工具完成一幅創作。,\"作品呈現\n口語發表\",0,\"◎科技促進家庭連結\n【家庭教育】\n【資訊教育】\n【性別平等教育】\",引起動機：討論如何運用科技與家人互動。主要活動：學習使用視訊通話、共同玩數位遊戲。綜合活動：分享與家人數位互動的經驗。,說出兩種運用科技與家人互動的方式。,\"課堂發表\n經驗分享\",0,\"◎我的個人資料\n【安全教育】\n【資訊教育】\n【性別平等教育】\",引起動機：討論個人資料的重要性。主要活動：認識什麼是個人資料、如何保護個人隱私。綜合活動：設計保護個人資料的標語。,設計一則保護個人資料的標語。,\"問思討論\n海報設計\",0,\"◎戶外活動中的科技應用\n【戶外教育】\n【安全教育】\n【科技教育】\",引起動機：討論戶外活動中科技扮演的角色。主要活動：認識GPS定位、手電筒App等戶外安全科技。綜合活動：設計戶外安全科技裝備。,說出兩種戶外活動中可用的科技工具及其功能。,\"課堂發表\n設計圖\",0,\"◎拒絕網路霸凌與性騷擾\n【性別平等教育】\n【安全教育】\n【資訊教育】\",引起動機：討論網路霸凌與性騷擾的案例。主要活動：學習辨識網路霸凌及性騷擾行為、如何求助、不分享私密照片。綜合活動：編寫反霸凌與性騷擾宣言。,說出遇到網路霸凌或性騷擾時的兩種求助方式。,\"問思討論\n宣言發表\",0,\"◎保護自己與家人\n【家庭教育】\n【安全教育】\n【性別平等教育】\",引起動機：討論家庭中不當互動的影響。主要活動：認識家庭暴力類型、學習求助管道。綜合活動：演練如何尋求協助。,說出兩種家庭暴力求助管道。,\"情境演練\n口語表達\",0,\"◎我的科技作品展\n【資訊教育】\n【科技教育】\",引起動機：回顧本學期科技學習歷程。主要活動：學生展示個人或小組科技作品。綜合活動：互相觀摩、票選最佳作品。,發表一份本學期製作的科技作品。,\"成果發表\n互評\",0,\"◎綠色科技生活\n【科技教育】\n【環境教育】\",引起動機：討論科技如何幫助環境保護。主要活動：認識環保科技產品、學習節能減碳的科技應用。綜合活動：設計一份綠色科技生活行動計畫。,提出兩種科技如何幫助環保的例子。,\"課堂發表\n行動計畫\",0,\"◎我的智慧家庭\n【科技教育】\n【家庭教育】\",引起動機：介紹智慧家庭的便利性。主要活動：討論智慧家電的功能與應用。綜合活動：繪製未來智慧家庭想像圖。,說出兩種智慧家庭產品的功能。,\"課堂發表\n繪圖\",0,\"◎辨識假新聞\n【資訊教育】\n【科技教育】\n【安全教育】\n【性別平等教育】\",引起動機：討論網路新聞的真實性。主要活動：學習分辨網路資訊的真偽、認識媒體素養。綜合活動：分析一則網路新聞的真實性。,說出兩種辨識假新聞的方法。,\"問思討論\n學習單\",0,\"◎程式積木進階\n【資訊教育】\n【科技教育】\",引起動機：欣賞複雜的積木程式作品。主要活動：學習積木程式的條件判斷、重複迴圈。綜合活動：設計一個包含互動功能的遊戲或故事。,設計一個包含條件判斷的積木程式。,\"實作評量\n作品展示\",0,\"◎運動與穿戴裝置\n【科技教育】\",引起動機：討論科技如何幫助健康管理。主要活動：認識運動穿戴裝置、健康管理App。綜合活動：分享個人健康管理科技經驗。,說出兩種穿戴裝置的健康管理功能。,\"課堂發表\n經驗分享\",0,\"◎我的網路痕跡\n【資訊教育】\n【安全教育】\n【性別平等教育】\",引起動機：討論網路上的個人資訊。主要活動：認識數位足跡、學習如何保護個人隱私。綜合活動：設計保護數位足跡的宣導海報。,說出兩種保護數位足跡的方法。,\"問思討論\n海報設計\",0,\"◎數位音樂與影像編輯\n【資訊教育】\n【科技教育】\",引起動機：欣賞數位音樂與影像作品。主要活動：學習使用簡易的音樂創作App、影像編輯軟體。綜合活動：製作一段數位音樂或編輯短片。,運用數位工具創作一段15秒的音樂或編輯一段短片。,\"實作評量\n作品展示\",0,\"◎科技與戶外導覽\n【戶外教育】\n【資訊教育】\n【科技教育】\",引起動機：介紹戶外導覽App。主要活動：利用平板或手機進行校園尋寶活動，記錄發現。綜合活動：分享校園尋寶成果。,使用數位工具完成校園尋寶任務並紀錄三項發現。,\"實作評量\n觀察紀錄\",0,\"◎打造多元科技世界\n【性別平等教育】\n【科技教育】\n【資訊教育】\",引起動機：討論科技產品設計中的性別考量。主要活動：分析科技產品廣告中的性別形象。綜合活動：設計一款符合性別平等的科技產品。,分析一則科技產品廣告中的性別形象。,\"問思討論\n設計草圖\",0,\"◎AI小幫手\n【科技教育】\n【資訊教育】\",引起動機：介紹生活中的AI應用。主要活動：討論AI的優點與限制。綜合活動：想像未來AI如何改變生活。,說出兩種生活中的AI應用。,\"課堂發表\n想像分享\",0,\"◎防災科技應用\n【安全教育】\n【科技教育】\n【家庭教育】\",引起動機：討論災害發生的應變。主要活動：認識防災科技產品、學習防災App的使用。綜合活動：設計一份家庭防災科技清單。,說出兩種防災科技產品的功能。,\"課堂發表\n清單設計\",0,\"◎安全上網，拒絕侵害\n【安全教育】\n【資訊教育】\n【性別平等教育】\",引起動機：討論網路上的不當訊息與行為。主要活動：學習辨識網路性騷擾、性霸凌行為，認識求助管道。綜合活動：演練遇到不當訊息的應對。,說出遇到網路性騷擾時的兩種求助方式。,\"情境演練\n口語表達\",0,\"◎科技與家庭溝通倫理\n【家庭教育】\n【資訊教育】\n【科技教育】\n【安全教育】\",引起動機：討論家庭溝通的重要性。主要活動：運用數位工具（如共用行事曆、訊息App）促進家庭溝通，並討論數位溝通的界線與倫理，避免數位情緒勒索。綜合活動：設計一份家庭數位溝通計畫，包含倫理規範。,設計一份家庭數位溝通計畫，並提出一項數位溝通倫理。,\"學習單\n小組討論\",0,\"◎資料視覺化\n【資訊教育】\n【科技教育】\",引起動機：欣賞有趣的圖表。主要活動：學習簡易資料整理、製作圓餅圖或長條圖。綜合活動：分析班級同學喜歡的科技產品數據。,製作一份包含簡單數據的圖表。,\"實作評量\n作品展示\",0,\"◎我的科技解決方案\n【科技教育】\n【資訊教育】\",引起動機：回顧生活中的問題。主要活動：分組發想一個生活問題，運用科技工具設計解決方案。綜合活動：小組討論與原型發想。,提出一個生活問題並設計初步的科技解決方案。,\"小組討論\n方案發表\",0,\"◎科技助我記錄戶外\n【戶外教育】\n【資訊教育】\n【科技教育】\",引起動機：介紹戶外紀錄的科技工具。主要活動：利用平板或手機紀錄戶外聲音、影像。綜合活動：編輯一段戶外探索短片。,錄製一段戶外聲音或影像並進行簡易編輯。,\"實作評量\n作品呈現\",0,\"◎辨識網路陷阱\n【安全教育】\n【資訊教育】\n【性別平等教育】\",引起動機：討論網路色情資訊的危害。主要活動：學習辨識網路色情與誘騙，了解拒絕與求助。綜合活動：情境演練如何拒絕不當要求。,說出兩種網路誘騙的常見手法及應對方式。,\"問思討論\n情境演練\",0,\"◎建立安全家庭環境\n【家庭教育】\n【安全教育】\n【性別平等教育】\",引起動機：討論家庭中不健康的人際關係。主要活動：認識家庭暴力防治法、學習求助管道與保護自己。綜合活動：設計家庭求助小卡。,說出兩種家庭暴力求助管道，並設計求助小卡。,\"情境演練\n小卡設計\",0,\"◎我的數位行動力\n【資訊教育】\n【科技教育】\n【性別平等教育】\",引起動機：討論數位科技對社會的影響。主要活動：學習負責任的數位公民行為、參與線上公益活動。綜合活動：提出一個運用科技改善社會的點子。,提出一個運用科技改善社會的點子。,\"課堂發表\n點子發想\",0,\"◎科技守護家庭\n【家庭教育】\n【安全教育】\n【科技教育】\",引起動機：討論科技在家庭暴力防治中的應用。主要活動：認識數位工具如何協助受害者求助或蒐證。綜合活動：討論科技如何建立更安全的家庭環境。,說出兩種科技在家庭暴力防治中的應用。,\"問思討論\n分享\",0,\"◎我的科技探索之旅\n【資訊教育】\n【科技教育】\",引起動機：回顧整學年科技學習歷程。主要活動：學生展示個人或小組科技專題成果。綜合活動：互相觀摩、分享心得，展望未來。,發表一份本學年製作的科技專題成果。,\"成果發表\n互評\",0",
+  reading:"schoolName,schoolYear,grade,courseTitle,weeklyHours,designer,core_A1,core_A2,core_A3,core_B1,core_B2,core_B3,core_C1,core_C2,core_C3,s1_issue_title_1,s1_issue_ind_1,s1_issue_title_2,s1_issue_ind_2,s1_issue_title_3,s1_issue_ind_3,s1_issue_title_4,s1_issue_ind_4,s1_issue_title_5,s1_issue_ind_5,s1_issue_title_6,s1_issue_ind_6,s1_issue_title_7,s1_issue_ind_7,s1_issue_title_8,s1_issue_ind_8,s1_issue_title_9,s1_issue_ind_9,s1_issue_title_10,s1_issue_ind_10,s1_perf_domain_1,s1_perf_ind_1,s1_perf_domain_2,s1_perf_ind_2,s1_perf_domain_3,s1_perf_ind_3,s1_perf_domain_4,s1_perf_ind_4,s1_perf_domain_5,s1_perf_ind_5,s1_perf_domain_6,s1_perf_ind_6,s1_perf_domain_7,s1_perf_ind_7,s1_perf_domain_8,s1_perf_ind_8,s1_perf_domain_9,s1_perf_ind_9,s1_perf_domain_10,s1_perf_ind_10,s1_cont_domain_1,s1_cont_ind_1,s1_cont_domain_2,s1_cont_ind_2,s1_cont_domain_3,s1_cont_ind_3,s1_cont_domain_4,s1_cont_ind_4,s1_cont_domain_5,s1_cont_ind_5,s1_cont_domain_6,s1_cont_ind_6,s1_cont_domain_7,s1_cont_ind_7,s1_cont_domain_8,s1_cont_ind_8,s1_cont_domain_9,s1_cont_ind_9,s1_cont_domain_10,s1_cont_ind_10,s1_goalCognitive,s1_goalSkill,s1_goalAttitude,s1_assessment,s2_issue_title_1,s2_issue_ind_1,s2_issue_title_2,s2_issue_ind_2,s2_issue_title_3,s2_issue_ind_3,s2_issue_title_4,s2_issue_ind_4,s2_issue_title_5,s2_issue_ind_5,s2_issue_title_6,s2_issue_ind_6,s2_issue_title_7,s2_issue_ind_7,s2_issue_title_8,s2_issue_ind_8,s2_issue_title_9,s2_issue_ind_9,s2_issue_title_10,s2_issue_ind_10,s2_perf_domain_1,s2_perf_ind_1,s2_perf_domain_2,s2_perf_ind_2,s2_perf_domain_3,s2_perf_ind_3,s2_perf_domain_4,s2_perf_ind_4,s2_perf_domain_5,s2_perf_ind_5,s2_perf_domain_6,s2_perf_ind_6,s2_perf_domain_7,s2_perf_ind_7,s2_perf_domain_8,s2_perf_ind_8,s2_perf_domain_9,s2_perf_ind_9,s2_perf_domain_10,s2_perf_ind_10,s2_cont_domain_1,s2_cont_ind_1,s2_cont_domain_2,s2_cont_ind_2,s2_cont_domain_3,s2_cont_ind_3,s2_cont_domain_4,s2_cont_ind_4,s2_cont_domain_5,s2_cont_ind_5,s2_cont_domain_6,s2_cont_ind_6,s2_cont_domain_7,s2_cont_ind_7,s2_cont_domain_8,s2_cont_ind_8,s2_cont_domain_9,s2_cont_ind_9,s2_cont_domain_10,s2_cont_ind_10,s2_goalCognitive,s2_goalSkill,s2_goalAttitude,s2_assessment,s1_w1_unit,s1_w1_content,s1_w1_task,s1_w1_eval,s1_w1_merge,s1_w2_unit,s1_w2_content,s1_w2_task,s1_w2_eval,s1_w2_merge,s1_w3_unit,s1_w3_content,s1_w3_task,s1_w3_eval,s1_w3_merge,s1_w4_unit,s1_w4_content,s1_w4_task,s1_w4_eval,s1_w4_merge,s1_w5_unit,s1_w5_content,s1_w5_task,s1_w5_eval,s1_w5_merge,s1_w6_unit,s1_w6_content,s1_w6_task,s1_w6_eval,s1_w6_merge,s1_w7_unit,s1_w7_content,s1_w7_task,s1_w7_eval,s1_w7_merge,s1_w8_unit,s1_w8_content,s1_w8_task,s1_w8_eval,s1_w8_merge,s1_w9_unit,s1_w9_content,s1_w9_task,s1_w9_eval,s1_w9_merge,s1_w10_unit,s1_w10_content,s1_w10_task,s1_w10_eval,s1_w10_merge,s1_w11_unit,s1_w11_content,s1_w11_task,s1_w11_eval,s1_w11_merge,s1_w12_unit,s1_w12_content,s1_w12_task,s1_w12_eval,s1_w12_merge,s1_w13_unit,s1_w13_content,s1_w13_task,s1_w13_eval,s1_w13_merge,s1_w14_unit,s1_w14_content,s1_w14_task,s1_w14_eval,s1_w14_merge,s1_w15_unit,s1_w15_content,s1_w15_task,s1_w15_eval,s1_w15_merge,s1_w16_unit,s1_w16_content,s1_w16_task,s1_w16_eval,s1_w16_merge,s1_w17_unit,s1_w17_content,s1_w17_task,s1_w17_eval,s1_w17_merge,s1_w18_unit,s1_w18_content,s1_w18_task,s1_w18_eval,s1_w18_merge,s1_w19_unit,s1_w19_content,s1_w19_task,s1_w19_eval,s1_w19_merge,s1_w20_unit,s1_w20_content,s1_w20_task,s1_w20_eval,s1_w20_merge,s1_w21_unit,s1_w21_content,s1_w21_task,s1_w21_eval,s1_w21_merge,s2_w1_unit,s2_w1_content,s2_w1_task,s2_w1_eval,s2_w1_merge,s2_w2_unit,s2_w2_content,s2_w2_task,s2_w2_eval,s2_w2_merge,s2_w3_unit,s2_w3_content,s2_w3_task,s2_w3_eval,s2_w3_merge,s2_w4_unit,s2_w4_content,s2_w4_task,s2_w4_eval,s2_w4_merge,s2_w5_unit,s2_w5_content,s2_w5_task,s2_w5_eval,s2_w5_merge,s2_w6_unit,s2_w6_content,s2_w6_task,s2_w6_eval,s2_w6_merge,s2_w7_unit,s2_w7_content,s2_w7_task,s2_w7_eval,s2_w7_merge,s2_w8_unit,s2_w8_content,s2_w8_task,s2_w8_eval,s2_w8_merge,s2_w9_unit,s2_w9_content,s2_w9_task,s2_w9_eval,s2_w9_merge,s2_w10_unit,s2_w10_content,s2_w10_task,s2_w10_eval,s2_w10_merge,s2_w11_unit,s2_w11_content,s2_w11_task,s2_w11_eval,s2_w11_merge,s2_w12_unit,s2_w12_content,s2_w12_task,s2_w12_eval,s2_w12_merge,s2_w13_unit,s2_w13_content,s2_w13_task,s2_w13_eval,s2_w13_merge,s2_w14_unit,s2_w14_content,s2_w14_task,s2_w14_eval,s2_w14_merge,s2_w15_unit,s2_w15_content,s2_w15_task,s2_w15_eval,s2_w15_merge,s2_w16_unit,s2_w16_content,s2_w16_task,s2_w16_eval,s2_w16_merge,s2_w17_unit,s2_w17_content,s2_w17_task,s2_w17_eval,s2_w17_merge,s2_w18_unit,s2_w18_content,s2_w18_task,s2_w18_eval,s2_w18_merge,s2_w19_unit,s2_w19_content,s2_w19_task,s2_w19_eval,s2_w19_merge,s2_w20_unit,s2_w20_content,s2_w20_task,s2_w20_eval,s2_w20_merge,s2_w21_unit,s2_w21_content,s2_w21_task,s2_w21_eval,s2_w21_merge\n桃園市八德區大勇國民小學,115,五,閱讀素養好好玩：探索故事與世界,1節,五年級教學團隊,0,1,0,0,1,0,1,0,0,閱讀素養教育,\"閱E1 透過閱讀理解不同文本的訊息與觀點。\n閱E2 運用閱讀策略提升閱讀效能。\n閱E3 培養自主閱讀習慣與樂趣。\",家庭教育,\"家E1 認識家庭成員間的互動與責任。\n家E2 了解家庭在個人成長中的重要性。\n家E3 學習處理家庭衝突與溝通。\",性別平等教育,\"性E1 認識性別角色刻板印象的影響。\n性E2 理解並尊重不同性別特質與性傾向。\n性E3 學習建立友善和尊重的性別互動關係。\",戶外教育,\"戶E1 體驗並探索戶外環境的樂趣。\n戶E2 學習戶外活動的安全知識與技能。\n戶E3 培養對自然環境的關懷與責任感。\",法治教育,\"法E1 認識法律與規則對社會生活的重要性。\n法E2 了解個人權利與義務。\n法E3 學習尊重他人權利，遵守法治精神。\",安全教育,\"安E1 認識生活中的各種危險情境。\n安E2 學習自我保護與求助的技能。\n安E3 培養防災與應變能力。\",品德教育,\"品E1 認識並實踐誠實、負責、尊重等核心品德。\n品E2 學習在群體中展現良好品格。\n品E3 培養同理心與關懷他人的情操。\",,,,,,,國語文,\"國1-III-1 閱讀各類文本，理解內容主旨，並摘要重點。\n國2-III-2 認識不同文體寫作的特色，並練習寫作。\n國3-III-3 透過口語或書面表達，分享閱讀心得與觀點。\",綜合活動,\"綜1-III-1 探索自我特質與潛能，並欣賞他人優點。\n綜2-III-2 學習與人合作，建立良好人際關係。\n綜3-III-3 參與團體活動，培養團隊合作精神。\",社會,\"社1-III-1 認識不同文化與社會現象。\n社2-III-2 了解公民權利與義務，參與公共事務。\n社3-III-3 學習分析與解決社會問題。\",,,,,,,,,,,,,,,國語文,\"國Ad-III-1 閱讀策略與技巧：提問、預測、歸納、分析。\n國Bb-III-2 文本類型與結構：記敘文、說明文、議論文。\n國Ca-III-3 語文表達與溝通：口語報告、書面寫作、心得分享。\",綜合活動,\"綜Ac-III-1 自我探索與成長：情緒管理、壓力調適。\n綜Bb-III-2 人際互動與溝通：傾聽、表達、同理心。\n綜Ca-III-3 服務學習與社會參與：社區服務、議題關懷。\",健康與體育,\"健Ad-III-1 身體健康與發展：營養均衡、規律運動。\n健Bc-III-2 心理健康與調適：情緒覺察、壓力因應。\n健Da-III-3 兩性關係與性侵害防治：身體自主權、求助管道。\",,,,,,,,,,,,,,,\"1. 理解不同文本的內容主旨、寫作手法與作者觀點。\n2. 認識故事中的人物情感、情節發展與主題意涵。\n3. 學習運用閱讀策略，提升閱讀理解與分析能力。\n4. 了解家庭、性別與戶外活動相關知識與議題。\n5. 辨識資訊的正確性與多元觀點。\",\"1. 能流暢地朗讀文本，並透過口語或書面方式分享閱讀心得。\n2. 能運用提問、預測、歸納等策略，有效理解與分析文本。\n3. 能參與討論，表達個人對文本內容的看法與見解。\n4. 能設計並完成與閱讀主題相關的學習單或實作作品。\n5. 能將閱讀所學應用於生活情境，解決問題。\",\"1. 培養對閱讀的興趣與樂趣，樂於接觸不同類型的文本。\n2. 養成自主閱讀的習慣，享受閱讀帶來的知識與啟發。\n3. 發展批判性思考能力，對文本內容提出質疑與反思。\n4. 尊重多元文化與價值觀，培養同理心與社會關懷。\n5. 積極參與學習活動，樂於與他人分享與合作。\",問思討論、口說發表、學習單、實作練習、作品展示、小組合作評量,閱讀素養教育,\"閱E1 透過閱讀理解不同文本的訊息與觀點。\n閱E2 運用閱讀策略提升閱讀效能。\n閱E3 培養自主閱讀習慣與樂趣。\",家庭教育,\"家E1 認識家庭成員間的互動與責任。\n家E2 了解家庭在個人成長中的重要性。\n家E3 學習處理家庭衝突與溝通。\",性別平等教育,\"性E1 認識性別角色刻板印象的影響。\n性E2 理解並尊重不同性別特質與性傾向。\n性E3 學習建立友善和尊重的性別互動關係。\",戶外教育,\"戶E1 體驗並探索戶外環境的樂趣。\n戶E2 學習戶外活動的安全知識與技能。\n戶E3 培養對自然環境的關懷與責任感。\",品德教育,\"品E1 認識並實踐誠實、負責、尊重等核心品德。\n品E2 學習在群體中展現良好品格。\n品E3 培養同理心與關懷他人的情操。\",生涯規劃教育,\"涯E1 探索個人興趣、性向與能力。\n涯E2 認識多元職業世界與工作價值。\n涯E3 培養規劃未來學習與生涯發展的能力。\",國際教育,\"國E1 認識全球議題與多元文化。\n國E2 培養跨文化理解與溝通能力。\n國E3 發展國際觀與全球公民責任。\",,,,,,,國語文,\"國1-III-1 閱讀各類文本，理解內容主旨，並摘要重點。\n國2-III-2 認識不同文體寫作的特色，並練習寫作。\n國3-III-3 透過口語或書面表達，分享閱讀心得與觀點。\",綜合活動,\"綜1-III-1 探索自我特質與潛能，並欣賞他人優點。\n綜2-III-2 學習與人合作，建立良好人際關係。\n綜3-III-3 參與團體活動，培養團隊合作精神。\",藝術,\"藝1-III-1 感受並欣賞不同形式的藝術作品。\n藝2-III-2 運用藝術媒材表達個人情感與想法。\n藝3-III-3 了解藝術在生活中的應用與價值。\",,,,,,,,,,,,,,,國語文,\"國Ad-III-1 閱讀策略與技巧：提問、預測、歸納、分析。\n國Bb-III-2 文本類型與結構：記敘文、說明文、議論文。\n國Ca-III-3 語文表達與溝通：口語報告、書面寫作、心得分享。\",綜合活動,\"綜Ac-III-1 自我探索與成長：情緒管理、壓力調適。\n綜Bb-III-2 人際互動與溝通：傾聽、表達、同理心。\n綜Ca-III-3 服務學習與社會參與：社區服務、議題關懷。\",社會,\"社Ac-III-1 社會文化與多元發展：文化差異、社會變遷。\n社Bb-III-2 公民參與與責任：社區營造、公共議題探討。\n社Ca-III-3 全球議題與永續發展：環境保護、國際合作。\",,,,,,,,,,,,,,,\"1. 深入理解文本的深層意涵與作者的創作動機。\n2. 認識不同文化背景下的故事與人物，拓展國際視野。\n3. 學習比較與分析不同文本的觀點，形成個人見解。\n4. 了解品德教育的重要性，並將其融入日常行為。\n5. 探討性別、家庭、戶外活動的進階議題。\",\"1. 能運用多種閱讀策略，有效分析複雜文本的結構與內容。\n2. 能撰寫具個人觀點的讀書心得或評論文章。\n3. 能參與專題討論，提出有建設性的意見並與他人協商。\n4. 能設計並執行與閱讀主題相關的學習活動或專案。\n5. 能將閱讀所學應用於實際生活，解決真實世界的問題。\",\"1. 培養終身學習的態度，持續探索新知與閱讀樂趣。\n2. 發展批判性思考與獨立判斷能力，不盲從。\n3. 建立積極主動的學習態度，樂於挑戰與創新。\n4. 培養關懷社會與環境的情懷，實踐公民責任。\n5. 欣賞多元文化，尊重差異，建立和諧共處的價值觀。\",專題報告、小組討論、辯論發表、學習檔案、成果展現、互評與自評,\"◎開啟閱讀之門：故事的魅力\n【閱讀素養教育】\",\"引起動機：分享自己喜歡的故事書。\n主要活動：介紹《秘密花園》選段，討論閱讀策略。\n綜合活動：閱讀任務單，寫下閱讀期待。\",完成閱讀期待小卡，分享個人閱讀經驗。,\"課堂觀察\n口語表達\n學習單\",0,\"◎性別探索：故事中的角色\n【閱讀素養教育】\n【性別平等教育】\",\"引起動機：討論童話故事中的性別角色。\n主要活動：閱讀《勇敢的安妮公主》，分析角色特質。\n綜合活動：分組討論性別刻板印象的影響。\",繪製故事角色心智圖，並寫下對性別角色的看法。,\"分組討論\n學習單\n課堂觀察\",0,\"◎家庭溫暖：家的故事\n【閱讀素養教育】\n【家庭教育】\",\"引起動機：分享家庭照片與故事。\n主要活動：閱讀《我爸爸》，討論家人間的情感與責任。\n綜合活動：家庭成員角色扮演，學習同理心。\",製作家庭樹或家庭成員介紹卡，並說明家人對自己的意義。,\"口語發表\n實作評量\n課堂觀察\",0,\"◎奇幻旅程：想像力的翅膀\n【閱讀素養教育】\",\"引起動機：播放奇幻故事預告片。\n主要活動：閱讀《哈利波特》選段，分析魔法世界的元素。\n綜合活動：小組創作一段奇幻故事開頭。\",完成奇幻故事創作草稿，並分享其中最吸引人的部分。,\"小組發表\n實作評量\n學習單\",0,\"◎身體自主：我是自己的主人\n【閱讀素養教育】\n【性別平等教育】\n【法治教育】\",\"引起動機：討論身體的界線。\n主要活動：閱讀《我的身體我作主》，認識身體自主權。\n綜合活動：情境討論，學習拒絕不舒服的接觸。\",繪製身體自主權海報，並寫下保護自己的方法。,\"問思討論\n海報製作\n口語表達\",0,\"◎友誼萬歲：朋友的故事\n【閱讀素養教育】\n【品德教育】\",\"引起動機：分享與朋友相處的經驗。\n主要活動：閱讀《夏綠蒂的網》，討論友誼的意義與力量。\n綜合活動：撰寫給朋友的感謝卡或友誼宣言。\",完成友誼宣言，並分享一位讓你感動的朋友故事。,\"學習單\n口語發表\n課堂觀察\",0,\"◎戶外探險：大自然的呼喚\n【閱讀素養教育】\n【戶外教育】\n【安全教育】\",\"引起動機：觀看戶外探險影片。\n主要活動：閱讀《魯賓遜漂流記》選段，討論野外求生技能。\n綜合活動：規劃一次虛擬戶外探險路線圖。\",繪製戶外探險地圖，標示危險與安全區域。,\"實作評量\n小組發表\n學習單\",0,\"◎性別平權：打破框架的力量\n【閱讀素養教育】\n【性別平等教育】\",\"引起動機：討論社會中的性別平等現象。\n主要活動：閱讀人物傳記《瑪麗居禮》，探討女性科學家貢獻。\n綜合活動：分享生活中看見的性別平權實例。\",撰寫一篇短文，描述一位你認為打破性別框架的人物。,\"短文寫作\n口語發表\n學習單\",0,\"◎歷史足跡：時光的故事\n【閱讀素養教育】\n【多元文化教育】\",\"引起動機：展示古老文物圖片。\n主要活動：閱讀歷史故事《小王子》，討論其隱喻與哲理。\n綜合活動：分組討論歷史事件對現代的影響。\",完成歷史事件時間軸，並選一個事件寫下心得。,\"時間軸製作\n心得分享\n課堂觀察\",0,\"◎愛與關懷：家庭的韌性\n【閱讀素養教育】\n【家庭教育】\",\"引起動機：討論家庭面臨的挑戰。\n主要活動：閱讀《媽媽的紅沙發》，探討家庭如何面對困境。\n綜合活動：分享自己家庭的溫馨時刻與支持。\",繪製家庭溫馨時刻圖畫，並寫下對家人的感謝。,\"繪畫作品\n口語表達\n學習單\",0,\"◎安全防護：保護自己與他人\n【閱讀素養教育】\n【安全教育】\n【性別平等教育】\",\"引起動機：觀看兒童安全宣導影片。\n主要活動：閱讀《小紅帽》多版本，討論危險情境與應對。\n綜合活動：學習緊急求助專線與方法。\",製作一份緊急求助卡，並練習求助情境。,\"情境演練\n實作評量\n學習單\",0,\"◎環境保護：地球的聲音\n【閱讀素養教育】\n【環境教育】\n【能源教育】\",\"引起動機：播放環保紀錄片片段。\n主要活動：閱讀《小樹苗的願望》，探討環境保護的重要性。\n綜合活動：討論日常生活中可實踐的環保行動。\",設計一份環保行動計畫，並寫下對地球的承諾。,\"計畫書撰寫\n口語發表\n課堂觀察\",0,\"◎生命價值：活出精彩\n【閱讀素養教育】\n【生命教育】\",\"引起動機：分享生命中美好的事物。\n主要活動：閱讀《一片葉子落下來》，探討生命的意義與循環。\n綜合活動：撰寫生命中的感謝清單。\",完成生命感謝清單，並分享最感謝的三件事。,\"學習單\n口語表達\n課堂觀察\",0,\"◎性別多元：看見不同的美\n【閱讀素養教育】\n【性別平等教育】\n【多元文化教育】\",\"引起動機：討論性別氣質的多樣性。\n主要活動：閱讀《我喜歡我自己》，認識自我認同與尊重差異。\n綜合活動：分組討論如何建立友善的校園環境。\",設計一個「友善校園」標誌，並說明其理念。,\"標誌設計\n小組發表\n問思討論\",0,\"◎自然探索：戶外觀察趣\n【閱讀素養教育】\n【戶外教育】\n【環境教育】\",\"引起動機：播放自然聲音或影片。\n主要活動：閱讀自然科學文章，學習戶外觀察技巧。\n綜合活動：規劃一次校園自然觀察活動，記錄發現。\",完成校園自然觀察紀錄表，並繪製觀察到的生物。,\"觀察紀錄\n繪畫作品\n實作評量\",0,\"◎科技與生活：未來的想像\n【閱讀素養教育】\n【科技教育】\n【資訊教育】\",\"引起動機：討論人工智慧對生活的影響。\n主要活動：閱讀科幻短篇故事，分析科技倫理議題。\n綜合活動：想像未來科技對閱讀的改變。\",撰寫一篇關於未來閱讀的想像短文。,\"短文寫作\n口語發表\n學習單\",0,\"◎拒絕性侵害：勇敢說不\n【閱讀素養教育】\n【性別平等教育】\n【安全教育】\",\"引起動機：討論如何保護自己不被侵犯。\n主要活動：閱讀相關案例故事，學習辨識危險情境。\n綜合活動：練習拒絕與求助的口語表達。\",製作一份「自我保護錦囊」，包含求助資訊與方法。,\"情境演練\n實作評量\n學習單\",0,\"◎社區關懷：我們的小鎮\n【閱讀素養教育】\n【家庭教育】\",\"引起動機：分享對自己社區的認識。\n主要活動：閱讀社區故事，了解地方特色與發展。\n綜合活動：討論如何參與社區服務，讓家園更好。\",繪製社區地圖，標示重要地點與提出改善建議。,\"地圖繪製\n口語發表\n問思討論\",0,\"◎多元文化：世界的故事\n【閱讀素養教育】\n【多元文化教育】\n【國際教育】\",\"引起動機：播放不同國家的音樂或影片。\n主要活動：閱讀不同文化背景的民間故事，認識風俗習慣。\n綜合活動：分享自己對異國文化的看法與尊重。\",製作一份文化介紹海報，介紹一個你感興趣的國家。,\"海報製作\n口語發表\n學習單\",0,\"◎批判思考：訊息的判斷\n【閱讀素養教育】\n【資訊教育】\n【法治教育】\",\"引起動機：討論假新聞的影響。\n主要活動：閱讀新聞報導，學習判斷資訊的真偽與來源。\n綜合活動：分組討論如何成為聰明的資訊使用者。\",分析一篇新聞報導，找出其客觀與主觀的部分。,\"文本分析\n分組討論\n口語發表\",0,\"◎學期回顧：閱讀大豐收\n【閱讀素養教育】\",\"引起動機：回顧本學期閱讀過的文本。\n主要活動：分組進行閱讀闖關遊戲，檢視學習成果。\n綜合活動：分享本學期最有收穫的閱讀經驗與心得。\",完成閱讀學習單，並寫下對下學期的閱讀期許。,\"學習單\n口語發表\n遊戲評量\",0,\"◎新學期新閱讀：挑戰與成長\n【閱讀素養教育】\",\"引起動機：分享寒假閱讀經驗。\n主要活動：介紹本學期閱讀主題與目標，設定個人閱讀計畫。\n綜合活動：小組討論閱讀挑戰清單。\",完成個人閱讀計畫表，並分享一個想挑戰的閱讀目標。,\"閱讀計畫\n口語發表\n學習單\",0,\"◎性別角色：多元發展的可能性\n【閱讀素養教育】\n【性別平等教育】\n【生涯規劃教育】\",\"引起動機：討論不同職業的性別比例。\n主要活動：閱讀《做自己就好》，探討職業選擇與性別的關係。\n綜合活動：分享對未來職業的想像，不設限性別。\",繪製個人未來職業想像圖，並說明選擇原因。,\"繪畫作品\n口語發表\n問思討論\",0,\"◎家庭溝通：讓愛說出來\n【閱讀素養教育】\n【家庭教育】\",\"引起動機：討論家庭溝通的困境。\n主要活動：閱讀《好好說話》，學習有效溝通技巧。\n綜合活動：情境演練，練習與家人進行良好溝通。\",撰寫一封給家人的感謝信或溝通練習對話。,\"信件寫作\n情境演練\n學習單\",0,\"◎寓言故事：生活中的智慧\n【閱讀素養教育】\n【品德教育】\",\"引起動機：分享聽過的寓言故事。\n主要活動：閱讀伊索寓言選集，分析故事中的道理。\n綜合活動：小組改編或自創一則寓言故事。\",完成自創寓言故事，並說明其寓意。,\"故事創作\n小組發表\n學習單\",0,\"◎防治性侵害：建立安全網\n【閱讀素養教育】\n【性別平等教育】\n【安全教育】\",\"引起動機：討論校園與社區安全。\n主要活動：閱讀《小紅帽》進階版，討論求助管道與資源。\n綜合活動：製作校園安全地圖，標示求助地點。\",製作一份校園安全地圖，並標示可求助的師長或地點。,\"地圖製作\n口語發表\n問思討論\",0,\"◎詩歌欣賞：文字的音符\n【閱讀素養教育】\",\"引起動機：播放優美的背景音樂。\n主要活動：閱讀新詩或古典詩詞，感受文字意境與情感。\n綜合活動：嘗試創作一首短詩，表達個人情感。\",完成個人短詩創作，並朗讀分享。,\"詩歌創作\n朗讀發表\n學習單\",0,\"◎戶外教育：自然觀察與記錄\n【閱讀素養教育】\n【戶外教育】\n【環境教育】\",\"引起動機：觀看台灣生態紀錄片。\n主要活動：閱讀生物圖鑑或生態文章，學習野外觀察與記錄方法。\n綜合活動：校外教學，進行植物或昆蟲觀察。\",完成戶外觀察紀錄報告，包含文字描述與繪圖。,\"觀察報告\n實作評量\n課堂觀察\",0,\"◎性別與媒體：看見真實世界\n【閱讀素養教育】\n【性別平等教育】\n【資訊教育】\",\"引起動機：討論廣告中的性別形象。\n主要活動：閱讀媒體報導或廣告文案，分析性別呈現。\n綜合活動：分組討論如何批判性地看待媒體訊息。\",分析一則廣告或新聞中的性別呈現，並提出個人觀點。,\"文本分析\n分組討論\n口語發表\",0,\"◎名人傳記：學習典範人生\n【閱讀素養教育】\n【生涯規劃教育】\n【品德教育】\",\"引起動機：分享自己崇拜的人物。\n主要活動：閱讀名人傳記選段，探討其成功特質與挑戰。\n綜合活動：撰寫個人生涯規劃的初步想法。\",完成個人生涯規劃表，並選一位名人作為學習榜樣。,\"生涯規劃表\n口語發表\n學習單\",0,\"◎家庭支持：共築幸福家園\n【閱讀素養教育】\n【家庭教育】\",\"引起動機：討論家庭成員間如何互相支持。\n主要活動：閱讀《秘密》，探討家庭中的秘密與信任。\n綜合活動：分享如何為家庭成員提供幫助與關懷。\",撰寫一份「家庭互助清單」，並分享給家人。,\"清單製作\n口語表達\n學習單\",0,\"◎性侵害迷思：破除錯誤觀念\n【閱讀素養教育】\n【性別平等教育】\n【法治教育】\",\"引起動機：討論社會上對性侵害的常見迷思。\n主要活動：閱讀性侵害防治相關資訊，釐清正確觀念。\n綜合活動：設計防治性侵害宣導標語或海報。\",製作一份防治性侵害宣導海報，強調正確觀念。,\"海報設計\n口語發表\n問思討論\",0,\"◎海洋之歌：藍色的呼喚\n【閱讀素養教育】\n【海洋教育】\n【環境教育】\",\"引起動機：播放海洋紀錄片。\n主要活動：閱讀海洋文學或科學文章，了解海洋生態與保育。\n綜合活動：討論海洋污染問題與解決方案。\",設計一份海洋保育行動計畫，並寫下對海洋的承諾。,\"計畫書撰寫\n口語發表\n學習單\",0,\"◎原住民文化：部落的故事\n【閱讀素養教育】\n【原住民族教育】\n【多元文化教育】\",\"引起動機：播放原住民音樂或舞蹈影片。\n主要活動：閱讀原住民神話故事或生活文化介紹，認識其智慧。\n綜合活動：分享對原住民文化的尊重與欣賞。\",製作一份原住民文化介紹小書，分享其特色。,\"小書製作\n口語發表\n學習單\",0,\"◎性別與情緒：表達真實的自己\n【閱讀素養教育】\n【性別平等教育】\n【生命教育】\",\"引起動機：討論不同性別表達情緒的方式。\n主要活動：閱讀《生氣王子》，學習情緒管理與表達。\n綜合活動：練習以健康方式表達憤怒或悲傷。\",撰寫一篇情緒日記，記錄並分析自己的情緒。,\"情緒日記\n口語表達\n問思討論\",0,\"◎戶外危機：應變與求生\n【閱讀素養教育】\n【戶外教育】\n【安全教育】\n【防災教育】\",\"引起動機：討論戶外活動可能遇到的危險。\n主要活動：閱讀防災手冊或求生指南，學習應變技巧。\n綜合活動：情境演練，模擬戶外求生情況。\",製作一份戶外求生包清單，並說明物品用途。,\"實作評量\n情境演練\n學習單\",0,\"◎國際視野：看見世界脈動\n【閱讀素養教育】\n【國際教育】\n【多元文化教育】\",\"引起動機：討論國際新聞或世界大事。\n主要活動：閱讀國際新聞報導或文化介紹，了解全球議題。\n綜合活動：分組討論一個全球性議題並提出解決方案。\",撰寫一份全球議題報告，提出個人見解與解決方案。,\"報告撰寫\n分組發表\n問思討論\",0,\"◎性侵害求助：管道與支持\n【閱讀素養教育】\n【性別平等教育】\n【法治教育】\",\"引起動機：討論如何幫助受侵害的朋友。\n主要活動：閱讀相關資訊，了解性侵害受害者的求助管道與資源。\n綜合活動：設計一份「求助支持卡」，提供實用資訊。\",製作一份「求助支持卡」，內容包含求助專線與可信任對象。,\"實作評量\n口語發表\n學習單\",0,\"◎家庭暴力防治：零容忍的愛\n【閱讀素養教育】\n【家庭教育】\n【法治教育】\",\"引起動機：討論家庭暴力的影響。\n主要活動：閱讀相關案例，了解家庭暴力的種類與求助資源。\n綜合活動：討論如何建立無暴力的家庭環境。\",製作一份「家庭零暴力」宣導海報，傳達正確觀念。,\"海報設計\n口語發表\n問思討論\",0,\"◎閱讀的力量：改變世界\n【閱讀素養教育】\n【品德教育】\n【國際教育】\",\"引起動機：分享閱讀如何改變生活或世界的故事。\n主要活動：閱讀《馬拉拉：為教育挺身而出的女孩》，探討閱讀的力量。\n綜合活動：討論如何運用閱讀影響身邊的人或社會。\",撰寫一篇關於「閱讀的力量」的心得短文。,\"短文寫作\n口語發表\n學習單\",0,\"◎專題報告：我的閱讀之旅\n【閱讀素養教育】\",\"引起動機：回顧本學期閱讀成果。\n主要活動：學生選擇一個閱讀主題進行專題研究與報告。\n綜合活動：分組互相觀摩與提問，學習評鑑。\",完成個人閱讀專題報告，並進行口頭發表。,\"專題報告\n口頭發表\n互評與自評\",0,\"◎成果發表：閱讀嘉年華\n【閱讀素養教育】\",\"引起動機：準備成果發表會。\n主要活動：學生展示本學期閱讀成果，如作品、心得、表演。\n綜合活動：頒發閱讀獎勵，鼓勵持續閱讀。\",參與閱讀成果發表會，展示個人或小組作品。,\"作品展示\n口語發表\n活動參與\",0",
+  project:"schoolName,schoolYear,grade,courseTitle,weeklyHours,designer,core_A1,core_A2,core_A3,core_B1,core_B2,core_B3,core_C1,core_C2,core_C3,s1_issue_title_1,s1_issue_ind_1,s1_issue_title_2,s1_issue_ind_2,s1_issue_title_3,s1_issue_ind_3,s1_issue_title_4,s1_issue_ind_4,s1_issue_title_5,s1_issue_ind_5,s1_issue_title_6,s1_issue_ind_6,s1_issue_title_7,s1_issue_ind_7,s1_issue_title_8,s1_issue_ind_8,s1_issue_title_9,s1_issue_ind_9,s1_issue_title_10,s1_issue_ind_10,s1_perf_domain_1,s1_perf_ind_1,s1_perf_domain_2,s1_perf_ind_2,s1_perf_domain_3,s1_perf_ind_3,s1_perf_domain_4,s1_perf_ind_4,s1_perf_domain_5,s1_perf_ind_5,s1_perf_domain_6,s1_perf_ind_6,s1_perf_domain_7,s1_perf_ind_7,s1_perf_domain_8,s1_perf_ind_8,s1_perf_domain_9,s1_perf_ind_9,s1_perf_domain_10,s1_perf_ind_10,s1_cont_domain_1,s1_cont_ind_1,s1_cont_domain_2,s1_cont_ind_2,s1_cont_domain_3,s1_cont_ind_3,s1_cont_domain_4,s1_cont_ind_4,s1_cont_domain_5,s1_cont_ind_5,s1_cont_domain_6,s1_cont_ind_6,s1_cont_domain_7,s1_cont_ind_7,s1_cont_domain_8,s1_cont_ind_8,s1_cont_domain_9,s1_cont_ind_9,s1_cont_domain_10,s1_cont_ind_10,s1_goalCognitive,s1_goalSkill,s1_goalAttitude,s1_assessment,s2_issue_title_1,s2_issue_ind_1,s2_issue_title_2,s2_issue_ind_2,s2_issue_title_3,s2_issue_ind_3,s2_issue_title_4,s2_issue_ind_4,s2_issue_title_5,s2_issue_ind_5,s2_issue_title_6,s2_issue_ind_6,s2_issue_title_7,s2_issue_ind_7,s2_issue_title_8,s2_issue_ind_8,s2_issue_title_9,s2_issue_ind_9,s2_issue_title_10,s2_issue_ind_10,s2_perf_domain_1,s2_perf_ind_1,s2_perf_domain_2,s2_perf_ind_2,s2_perf_domain_3,s2_perf_ind_3,s2_perf_domain_4,s2_perf_ind_4,s2_perf_domain_5,s2_perf_ind_5,s2_perf_domain_6,s2_perf_ind_6,s2_perf_domain_7,s2_perf_ind_7,s2_perf_domain_8,s2_perf_ind_8,s2_perf_domain_9,s2_perf_ind_9,s2_perf_domain_10,s2_perf_ind_10,s2_cont_domain_1,s2_cont_ind_1,s2_cont_domain_2,s2_cont_ind_2,s2_cont_domain_3,s2_cont_ind_3,s2_cont_domain_4,s2_cont_ind_4,s2_cont_domain_5,s2_cont_ind_5,s2_cont_domain_6,s2_cont_ind_6,s2_cont_domain_7,s2_cont_ind_7,s2_cont_domain_8,s2_cont_ind_8,s2_cont_domain_9,s2_cont_ind_9,s2_cont_domain_10,s2_cont_ind_10,s2_goalCognitive,s2_goalSkill,s2_goalAttitude,s2_assessment,s1_w1_unit,s1_w1_content,s1_w1_task,s1_w1_eval,s1_w1_merge,s1_w2_unit,s1_w2_content,s1_w2_task,s1_w2_eval,s1_w2_merge,s1_w3_unit,s1_w3_content,s1_w3_task,s1_w3_eval,s1_w3_merge,s1_w4_unit,s1_w4_content,s1_w4_task,s1_w4_eval,s1_w4_merge,s1_w5_unit,s1_w5_content,s1_w5_task,s1_w5_eval,s1_w5_merge,s1_w6_unit,s1_w6_content,s1_w6_task,s1_w6_eval,s1_w6_merge,s1_w7_unit,s1_w7_content,s1_w7_task,s1_w7_eval,s1_w7_merge,s1_w8_unit,s1_w8_content,s1_w8_task,s1_w8_eval,s1_w8_merge,s1_w9_unit,s1_w9_content,s1_w9_task,s1_w9_eval,s1_w9_merge,s1_w10_unit,s1_w10_content,s1_w10_task,s1_w10_eval,s1_w10_merge,s1_w11_unit,s1_w11_content,s1_w11_task,s1_w11_eval,s1_w11_merge,s1_w12_unit,s1_w12_content,s1_w12_task,s1_w12_eval,s1_w12_merge,s1_w13_unit,s1_w13_content,s1_w13_task,s1_w13_eval,s1_w13_merge,s1_w14_unit,s1_w14_content,s1_w14_task,s1_w14_eval,s1_w14_merge,s1_w15_unit,s1_w15_content,s1_w15_task,s1_w15_eval,s1_w15_merge,s1_w16_unit,s1_w16_content,s1_w16_task,s1_w16_eval,s1_w16_merge,s1_w17_unit,s1_w17_content,s1_w17_task,s1_w17_eval,s1_w17_merge,s1_w18_unit,s1_w18_content,s1_w18_task,s1_w18_eval,s1_w18_merge,s1_w19_unit,s1_w19_content,s1_w19_task,s1_w19_eval,s1_w19_merge,s1_w20_unit,s1_w20_content,s1_w20_task,s1_w20_eval,s1_w20_merge,s1_w21_unit,s1_w21_content,s1_w21_task,s1_w21_eval,s1_w21_merge,s2_w1_unit,s2_w1_content,s2_w1_task,s2_w1_eval,s2_w1_merge,s2_w2_unit,s2_w2_content,s2_w2_task,s2_w2_eval,s2_w2_merge,s2_w3_unit,s2_w3_content,s2_w3_task,s2_w3_eval,s2_w3_merge,s2_w4_unit,s2_w4_content,s2_w4_task,s2_w4_eval,s2_w4_merge,s2_w5_unit,s2_w5_content,s2_w5_task,s2_w5_eval,s2_w5_merge,s2_w6_unit,s2_w6_content,s2_w6_task,s2_w6_eval,s2_w6_merge,s2_w7_unit,s2_w7_content,s2_w7_task,s2_w7_eval,s2_w7_merge,s2_w8_unit,s2_w8_content,s2_w8_task,s2_w8_eval,s2_w8_merge,s2_w9_unit,s2_w9_content,s2_w9_task,s2_w9_eval,s2_w9_merge,s2_w10_unit,s2_w10_content,s2_w10_task,s2_w10_eval,s2_w10_merge,s2_w11_unit,s2_w11_content,s2_w11_task,s2_w11_eval,s2_w11_merge,s2_w12_unit,s2_w12_content,s2_w12_task,s2_w12_eval,s2_w12_merge,s2_w13_unit,s2_w13_content,s2_w13_task,s2_w13_eval,s2_w13_merge,s2_w14_unit,s2_w14_content,s2_w14_task,s2_w14_eval,s2_w14_merge,s2_w15_unit,s2_w15_content,s2_w15_task,s2_w15_eval,s2_w15_merge,s2_w16_unit,s2_w16_content,s2_w16_task,s2_w16_eval,s2_w16_merge,s2_w17_unit,s2_w17_content,s2_w17_task,s2_w17_eval,s2_w17_merge,s2_w18_unit,s2_w18_content,s2_w18_task,s2_w18_eval,s2_w18_merge,s2_w19_unit,s2_w19_content,s2_w19_task,s2_w19_eval,s2_w19_merge,s2_w20_unit,s2_w20_content,s2_w20_task,s2_w20_eval,s2_w20_merge,s2_w21_unit,s2_w21_content,s2_w21_task,s2_w21_eval,s2_w21_merge\n桃園市八德區大勇國民小學,115,五,PBL專題研究：問題解決與行動實踐,1節,六年級教學團隊,0,1,1,1,1,0,1,0,1,家庭教育,\"家E1 培養對家庭的歸屬感與責任感。\n家E2 學習與家人有效溝通與互動。\n家E3 認識家庭暴力防治的相關知識與求助管道。\",性別平等教育,\"性E1 認識性別角色刻板印象的影響。\n性E2 學習尊重不同性別者的特質與權益。\n性E3 辨識性侵害與性騷擾，並學習自我保護與求助。\",戶外教育,\"戶E1 體驗戶外活動的樂趣與價值。\n戶E2 學習戶外活動的安全知識與技能。\n戶E3 培養對環境的覺知與愛護。\",資訊教育,\"資E1 運用資訊科技工具，蒐集與整理資料。\n資E2 認識網路倫理與資訊安全的重要性。\n資E3 學習以數位工具呈現學習成果。\",科技教育,\"科E1 認識科技在生活中的應用與影響。\n科E2 運用簡易科技工具，解決生活問題。\n科E3 培養對科技的探索興趣與批判思考。\",環境教育,\"環E1 認識環境議題與永續發展的關係。\n環E2 培養關懷環境的態度與行動力。\n環E3 學習參與環境保護的實踐方案。\",生涯規劃教育,\"涯E1 探索個人興趣與潛能。\n涯E2 了解不同職業的內涵與社會貢獻。\n涯E3 培養規劃未來學習與發展的能力。\",安全教育,\"安E1 認識日常生活中常見的危險情境。\n安E2 學習預防及處理意外事件的方法。\n安E3 建立正確的求助觀念與管道。\",,,,,綜合活動,\"綜2-Ⅲ-1 參與團體活動，並學習與人合作，完成任務。\n綜3-Ⅲ-1 關懷生活環境與公共事務，並提出改善建議。\",國語文,\"國B-Ⅲ-1 發展口語表達與溝通的能力。\n國D-Ⅲ-1 運用閱讀策略理解不同文本的內容與意涵。\",社會,\"社C-Ⅲ-1 探究生活環境與人文環境的互動關係，並提出改善方案。\n社D-Ⅲ-1 運用多元資料，分析社會議題的成因與影響。\",自然科學,\"自B-Ⅲ-1 運用科學探究的過程與方法，解決生活中的問題。\n自C-Ⅲ-1 認識自然資源的有限性，培養愛護環境的態度。\",資訊教育,\"資E-Ⅲ-1 運用資訊科技工具，進行資料蒐集、整理與分析。\n資F-Ⅲ-1 學習以數位工具表達想法與成果，並遵守資訊倫理。\",,,,,,,,,,,綜合活動,\"綜Ac-Ⅲ-1 討論與分享在團體合作中的經驗與感受。\n綜Bc-Ⅲ-1 參與社區服務或環境保護活動。\",國語文,\"國Bb-Ⅲ-1 學習運用口語報告、發表、討論等方式，分享學習成果。\n國Db-Ⅲ-1 閱讀與理解不同議題的文本，並歸納重點。\",社會,\"社Ca-Ⅲ-1 認識不同社區或地域的環境議題與發展特色。\n社Db-Ⅲ-1 學習從不同角度分析社會議題，並提出多元觀點。\",自然科學,\"自Ba-Ⅲ-1 透過觀察、實驗、資料分析，學習科學探究的方法。\n自Cb-Ⅲ-1 探討人類活動對環境的影響，並思考永續發展的策略。\",資訊教育,\"資Bc-Ⅲ-1 學習使用數位工具進行資料視覺化與簡報製作。\n資Cc-Ⅲ-1 認識智慧財產權，並學習正確引用資料。\",,,,,,,,,,,\"1. 能主動發現生活中的問題，並提出初步的觀察與疑問。\n2. 能蒐集、篩選與分析相關資訊，歸納問題的核心。\n3. 能提出具體的解決方案，並評估其可行性與效益。\n4. 能理解團隊合作的重要性，並學習有效溝通與協商。\n5. 能反思學習過程，並從中獲得啟發與成長。\",\"1. 習得運用多元工具（如訪談、問卷、網路搜尋）蒐集資料的能力。\n2. 發展資料整理、歸納與分析的技能，並能運用圖表輔助說明。\n3. 培養口語表達與簡報製作的技巧，清晰傳達專題成果。\n4. 學習與同儕分工合作，共同完成專題任務。\n5. 運用科技工具（如平板、電腦）進行資料處理與成果呈現。\",\"1. 培養對周遭事物的好奇心與探究精神。\n2. 養成積極主動、樂於合作的學習態度。\n3. 建立尊重多元觀點、接納不同意見的開闊心胸。\n4. 發展關懷社會、環境的公民意識與行動力。\n5. 勇於面對挑戰，從錯誤中學習與修正，培養解決問題的自信心。\",問思討論、口說發表、學習單、實作練習、簡報製作、成果發表、同儕互評、自我評量,家庭教育,\"家E1 培養對家庭的歸屬感與責任感。\n家E2 學習與家人有效溝通與互動。\n家E3 認識家庭暴力防治的相關知識與求助管道。\",性別平等教育,\"性E1 認識性別角色刻板印象的影響。\n性E2 學習尊重不同性別者的特質與權益。\n性E3 辨識性侵害與性騷擾，並學習自我保護與求助。\",戶外教育,\"戶E1 體驗戶外活動的樂趣與價值。\n戶E2 學習戶外活動的安全知識與技能。\n戶E3 培養對環境的覺知與愛護。\",資訊教育,\"資E1 運用資訊科技工具，蒐集與整理資料。\n資E2 認識網路倫理與資訊安全的重要性。\n資E3 學習以數位工具呈現學習成果。\",科技教育,\"科E1 認識科技在生活中的應用與影響。\n科E2 運用簡易科技工具，解決生活問題。\n科E3 培養對科技的探索興趣與批判思考。\",環境教育,\"環E1 認識環境議題與永續發展的關係。\n環E2 培養關懷環境的態度與行動力。\n環E3 學習參與環境保護的實踐方案。\",生涯規劃教育,\"涯E1 探索個人興趣與潛能。\n涯E2 了解不同職業的內涵與社會貢獻。\n涯E3 培養規劃未來學習與發展的能力。\",安全教育,\"安E1 認識日常生活中常見的危險情境。\n安E2 學習預防及處理意外事件的方法。\n安E3 建立正確的求助觀念與管道。\",,,,,綜合活動,\"綜2-Ⅲ-1 參與團體活動，並學習與人合作，完成任務。\n綜3-Ⅲ-1 關懷生活環境與公共事務，並提出改善建議。\",國語文,\"國B-Ⅲ-1 發展口語表達與溝通的能力。\n國D-Ⅲ-1 運用閱讀策略理解不同文本的內容與意涵。\",社會,\"社C-Ⅲ-1 探究生活環境與人文環境的互動關係，並提出改善方案。\n社D-Ⅲ-1 運用多元資料，分析社會議題的成因與影響。\",自然科學,\"自B-Ⅲ-1 運用科學探究的過程與方法，解決生活中的問題。\n自C-Ⅲ-1 認識自然資源的有限性，培養愛護環境的態度。\",資訊教育,\"資E-Ⅲ-1 運用資訊科技工具，進行資料蒐集、整理與分析。\n資F-Ⅲ-1 學習以數位工具表達想法與成果，並遵守資訊倫理。\",,,,,,,,,,,綜合活動,\"綜Ac-Ⅲ-1 討論與分享在團體合作中的經驗與感受。\n綜Bc-Ⅲ-1 參與社區服務或環境保護活動。\",國語文,\"國Bb-Ⅲ-1 學習運用口語報告、發表、討論等方式，分享學習成果。\n國Db-Ⅲ-1 閱讀與理解不同議題的文本，並歸納重點。\",社會,\"社Ca-Ⅲ-1 認識不同社區或地域的環境議題與發展特色。\n社Db-Ⅲ-1 學習從不同角度分析社會議題，並提出多元觀點。\",自然科學,\"自Ba-Ⅲ-1 透過觀察、實驗、資料分析，學習科學探究的方法。\n自Cb-Ⅲ-1 探討人類活動對環境的影響，並思考永續發展的策略。\",資訊教育,\"資Bc-Ⅲ-1 學習使用數位工具進行資料視覺化與簡報製作。\n資Cc-Ⅲ-1 認識智慧財產權，並學習正確引用資料。\",,,,,,,,,,,\"1. 能深入探究生活中的複雜問題，發展批判性思考能力。\n2. 能整合不同來源的資訊，提出創新且可行的解決方案。\n3. 能評估專題實踐後的影響，並提出修正與優化建議。\n4. 能理解多元文化的價值，並在專題中展現尊重與包容。\n5. 能將學習經驗應用於未來生活與學習情境中。\",\"1. 習得設計與執行訪談、問卷調查等進階資料蒐集方法。\n2. 發展運用統計圖表、心智圖等工具分析與歸納資料的技能。\n3. 培養清晰、有邏輯的書面報告與口頭發表能力。\n4. 學習有效分配任務、協調衝突，提升團隊合作的效能。\n5. 熟練運用數位簡報、影像編輯等科技工具，製作具吸引力的成果。\",\"1. 培養主動學習、持續探索的終身學習態度。\n2. 養成負責任、有擔當的團隊合作精神。\n3. 建立同理心，關懷弱勢與社會不公議題，並積極參與改善。\n4. 發展面對挑戰不畏懼、勇於創新的積極心態。\n5. 珍視每一次學習經驗，並樂於分享與反思。\",問思討論、專題報告、成果發表、實作評量、同儕互評、教師觀察、自我反思單,\"◎專題起航：PBL專題研究初體驗\n【生涯規劃教育】\",\"引起動機：觀看PBL專題範例影片，引導學生思考專題學習的意義。\n主要活動：介紹PBL專題研究流程與本學期專題主題「校園/社區永續發展專題」；分組討論，選定組長與任務分配。\n綜合活動：各組分享對PBL的期待與初步想法，教師引導歸納。\",完成PBL專題學習單，包含對課程的期待與初步分組構想。,\"課堂參與\n學習單\",0,\"◎發現問題：生活中的議題雷達\n【性別平等教育】\",\"引起動機：引導學生觀察校園或社區環境，思考是否有值得探討的現象或問題。\n主要活動：腦力激盪，列出校園/社區中存在的永續發展相關問題（如垃圾分類、節約能源、性別友善空間等），並進行初步篩選。\n綜合活動：各組分享發現的問題，並說明選擇的理由。\",完成「問題探索與選定」學習單，列出至少3個欲探討的問題。,\"課堂觀察\n口語發表\",0,\"◎定義問題：聚焦與發想研究題目\n【環境教育】\",\"引起動機：討論如何將廣泛的問題具體化，形成可研究的專題題目。\n主要活動：引導各組將選定的問題聚焦，設計具體的研究題目，並發想初步的研究方向或假說。\n綜合活動：各組上台說明專題題目與初步構想，教師給予回饋。\",提出專題研究題目與初步的研究方向。,\"專題題目發想單\n師生討論\",0,\"◎擬定計畫：規劃專題研究藍圖\n【環境教育】\",\"引起動機：分享不同研究計畫的範例，引導學生思考研究步驟。\n主要活動：各組討論並擬定詳細的研究計畫，包含研究目的、研究方法、預期成果與時間規劃。\n綜合活動：教師巡視各組討論，給予個別指導。\",完成專題研究計畫書初稿。,\"計畫書初稿\n小組討論表現\",0,\"◎資料蒐集：訪談與問卷設計\n【家庭教育】\",\"引起動機：討論如何設計有效的訪談問題與問卷題目，以獲取所需資訊。\n主要活動：引導學生設計訪談大綱或問卷，並進行組內模擬訪談練習。\n綜合活動：各組分享訪談與問卷設計，並針對家庭議題討論訪談禮儀。\",設計訪談大綱或問卷初稿。,\"訪談大綱/問卷設計單\n口語表達\",0,\"◎資料蒐集：實地觀察與文獻搜尋\n【性別平等教育】\",\"引起動機：分享不同觀察技巧與文獻搜尋方法。\n主要活動：引導學生規劃實地觀察的重點與紀錄方式，並學習利用圖書館或網路搜尋相關文獻資料，注意資料來源的可靠性。\n綜合活動：討論性別友善空間的觀察重點與資料蒐集方式。\",規劃實地觀察紀錄表與列出文獻搜尋關鍵字。,\"觀察紀錄表設計\n文獻搜尋策略\",0,\"◎戶外探查：走出教室蒐集資料\n【戶外教育】\n【資訊教育】\n【安全教育】\",\"引起動機：說明戶外探查的安全注意事項與禮儀。\n主要活動：帶領學生於校園或社區進行實地觀察、訪談或問卷調查，蒐集第一手資料。\n綜合活動：各組分享戶外蒐集資料的經驗與初步發現。\",完成戶外探查紀錄，包含觀察與訪談內容。,\"實作評量\n資料紀錄單\",0,\"◎戶外探查：社區資源與環境觀察\n【戶外教育】\",\"引起動機：回顧上週戶外探查經驗，強調安全與資料記錄的重要性。\n主要活動：持續進行戶外探查，聚焦於社區的永續發展相關資源或環境問題，如資源回收站、公園綠地、交通狀況等。\n綜合活動：各組討論戶外探查的心得與遭遇的困難，並思考解決方案。\",完成戶外探查的補充紀錄與初步資料整理。,\"資料紀錄單\n課堂討論\",0,\"◎資料整理：分類與歸納\n【性別平等教育】\n【資訊教育】\",\"引起動機：介紹心智圖、表格等資料整理工具。\n主要活動：引導學生將蒐集到的訪談、問卷、觀察及文獻資料進行分類、歸納與初步分析，找出資料中的關聯性。\n綜合活動：各組分享資料整理的初步成果，教師引導學生思考性別議題在資料中的呈現。\",製作資料整理心智圖或表格。,\"心智圖/表格\n資訊工具運用\",0,\"◎議題探討：性侵害防治教育\n【性別平等教育】\n【安全教育】\",\"引起動機：播放相關新聞案例或情境短劇，引導學生思考性侵害的定義與影響。\n主要活動：介紹性侵害防治的觀念、辨識性侵害與性騷擾的行為，並教導自我保護技巧，如「好、不好、說、走、報」原則。\n綜合活動：分組討論在專題研究過程中，如何確保自身與他人的安全，特別是訪談陌生人時的注意事項。\",完成性侵害防治學習單，並練習自我保護情境模擬。,\"學習單\n角色扮演\",0,\"◎議題探討：性侵害防治與求助管道\n【性別平等教育】\n【安全教育】\",\"引起動機：回顧上週性侵害防治課程內容，強調求助的重要性。\n主要活動：介紹校園內外可尋求協助的資源與管道（如輔導室、113保護專線、社福機構等），並學習如何正確地求助。\n綜合活動：分組討論在不同情境下如何求助，並強化性別平等的觀念。\",完成求助資源地圖或求助情境演練。,\"求助資源地圖\n口語表達\",0,\"◎資料分析：發現問題根源\n【家庭教育】\",\"引起動機：引導學生思考如何從整理好的資料中，找出問題的癥結點。\n主要活動：各組運用資料分析技巧，找出專題問題的成因、影響與相關利害關係人，並製作圖表視覺化呈現。\n綜合活動：各組分享分析結果，並討論問題背後的潛在因素。\",製作問題分析圖或因果關係圖。,\"圖表製作\n分析能力\",0,\"◎議題探討：家庭暴力防治教育\n【家庭教育】\n【安全教育】\",\"引起動機：透過繪本或新聞案例，引導學生認識家庭暴力的不同形式（肢體、精神、經濟等）。\n主要活動：介紹家庭暴力的定義、類型及對個人與家庭的影響，並強調家庭成員間應互相尊重與關愛。\n綜合活動：分組討論如何營造和諧的家庭氛圍，並學習辨識家庭暴力前兆。\",完成家庭暴力防治學習單，並分享對家庭和諧的看法。,\"學習單\n課堂討論\",0,\"◎形成解決方案：創意發想\n【性別平等教育】\n【資訊教育】\n【科技教育】\",\"引起動機：介紹創意發想技巧（如曼陀羅思考法、SCAMPER法）。\n主要活動：引導各組針對分析出的問題根源，進行腦力激盪，發想多元且具創意的解決方案，並考慮科技與資訊的應用。\n綜合活動：各組分享創意方案，教師引導學生思考方案的性別平等面向。\",提出至少3個解決方案的初步構想。,\"創意發想單\n口語發表\",0,\"◎方案設計：評估與精進\n【性別平等教育】\n【安全教育】\",\"引起動機：討論如何評估解決方案的可行性、效益與永續性。\n主要活動：各組評估發想的解決方案，選出最佳方案，並進行細部設計，包含所需資源、步驟與預期成效。同時再次提醒性侵害防治的重要性。\n綜合活動：各組分享選定的最佳方案與設計細節。\",完成解決方案設計書。,\"解決方案設計書\n師生討論\",0,\"◎實作行動：方案試行與調整\n【性別平等教育】\n【家庭教育】\n【安全教育】\",\"引起動機：說明將方案付諸實踐的重要性，並提醒安全注意事項。\n主要活動：各組依據設計書，進行小規模的方案試行，如製作宣傳海報、設計問卷、進行模擬宣導等，並記錄實作過程與遭遇的問題。同時強調預防家庭暴力。\n綜合活動：各組分享試行經驗，並討論如何調整方案以提升成效。\",完成方案試行紀錄與初步修正建議。,\"實作紀錄\n口語發表\",0,\"◎成果準備：簡報與海報製作\n【環境教育】\",\"引起動機：分享優良簡報與海報的範例，引導學生思考如何清晰有效地呈現成果。\n主要活動：引導各組將專題研究的過程與成果，製作成簡報或海報，強調視覺化與重點呈現，並融入環境教育的理念。\n綜合活動：各組進行簡報或海報的初步演練與互相回饋。\",完成簡報或海報草稿。,\"簡報/海報草稿\n同儕互評\",0,\"◎成果發表：專題分享會\n【性別平等教育】\n【安全教育】\",\"引起動機：說明成果發表的流程與注意事項，鼓勵學生展現自信。\n主要活動：各組上台發表專題研究成果，包含問題發現、研究過程、解決方案與實作行動，並開放師生提問與交流。同時再次強調性別平等與家庭暴力防治的理念。\n綜合活動：教師統整各組發表內容，給予整體回饋。\",完成專題成果發表。,\"口語發表\n簡報/海報內容\",0,\"◎成果發表：數位工具應用與交流\n【資訊教育】\n【科技教育】\",\"引起動機：分享不同數位工具在成果發表上的應用範例。\n主要活動：各組運用平板、電腦等數位工具，進行專題成果的數位化呈現，如製作短影片、互動式簡報或線上問卷，並進行成果交流。\n綜合活動：學生互相觀摩與學習不同數位工具的應用技巧。\",利用數位工具呈現專題成果。,\"數位成果作品\n科技工具運用\",0,◎反思修正：專題歷程回顧,\"引起動機：引導學生思考專題研究過程中的成功經驗與待改進之處。\n主要活動：各組回顧專題研究的整個歷程，包含個人與團隊的表現、專題的成效與限制，並提出未來可改進的方向。\n綜合活動：學生分享反思心得，教師鼓勵學生從錯誤中學習。\",完成專題反思心得報告。,\"反思報告\n口語發表\",0,\"◎未來展望：學習與成長的足跡\n【生涯規劃教育】\",\"引起動機：分享PBL專題研究對個人成長與未來學習的影響。\n主要活動：引導學生思考本次專題研究對個人能力、態度與未來生涯規劃的影響，並將學習經驗連結到其他領域的學習。\n綜合活動：學生分享本學期PBL專題的收穫與對未來學習的期許。\",完成學習成長足跡紀錄或給下學期自己的信。,\"學習成長紀錄\n口語發表\",0,\"◎新專題啟動：生活問題解決與科技應用\n【生涯規劃教育】\",\"引起動機：播放科技創新與生活應用相關影片，引導學生思考科技如何改善生活。\n主要活動：介紹本學期專題主題「生活問題解決與科技應用專題」，並複習PBL流程；分組討論，選定組長與任務分配。\n綜合活動：各組分享對新專題的期待與初步想法。\",完成新專題學習單，包含對課程的期待與初步分組構想。,\"課堂參與\n學習單\",0,\"◎問題探索：科技與性別平等的交會\n【性別平等教育】\",\"引起動機：引導學生觀察日常生活中與科技相關的問題，特別是可能涉及性別平等的議題（如AI偏見、數位性暴力等）。\n主要活動：腦力激盪，列出生活中與科技相關的待解決問題，並進行初步篩選，強調從多元視角看問題。\n綜合活動：各組分享發現的問題，並說明選擇的理由。\",完成「科技生活問題探索」學習單，列出至少3個欲探討的問題。,\"課堂觀察\n口語發表\",0,\"◎問題定義：形成研究主題\n【環境教育】\",\"引起動機：討論如何將廣泛的科技問題具體化，形成可研究的專題題目。\n主要活動：引導各組將選定的問題聚焦，設計具體的研究題目，並發想初步的研究方向，例如思考科技如何解決環境問題。\n綜合活動：各組上台說明專題題目與初步構想，教師給予回饋。\",提出專題研究題目與初步的研究方向。,\"專題題目發想單\n師生討論\",0,\"◎研究計畫：擬定科技專題藍圖\n【環境教育】\",\"引起動機：分享不同科技專題計畫的範例，引導學生思考研究步驟。\n主要活動：各組討論並擬定詳細的研究計畫，包含研究目的、研究方法、預期成果與時間規劃，特別強調科技工具的運用。\n綜合活動：教師巡視各組討論，給予個別指導，確保計畫的可行性，並思考環境友善的科技方案。\",完成專題研究計畫書初稿。,\"計畫書初稿\n小組討論表現\",0,\"◎資料蒐集：線上問卷與數據分析\n【家庭教育】\",\"引起動機：介紹線上問卷工具（如Google表單）的設計與使用技巧。\n主要活動：引導學生設計線上問卷，進行數據資料的蒐集，並學習初步的數據分析概念。可探討與家庭生活相關的數據。\n綜合活動：各組分享線上問卷設計，並討論數據分析的挑戰。\",設計線上問卷初稿。,\"線上問卷設計單\n口語表達\",0,\"◎資料蒐集：專家訪談與資訊判讀\n【性別平等教育】\",\"引起動機：分享如何聯繫與訪談相關領域專家，以及資訊判讀的重要性。\n主要活動：引導學生規劃專家訪談大綱，並學習從網路資訊中判讀資料的真偽與偏見，特別關注性別議題相關資訊的客觀性。\n綜合活動：各組分享專家訪談規劃，並討論資訊判讀的策略。\",規劃專家訪談大綱與資訊判讀策略。,\"訪談大綱/判讀策略\n口語表達\",0,\"◎戶外學習：科技場域參訪與體驗\n【戶外教育】\n【資訊教育】\n【安全教育】\",\"引起動機：說明戶外學習的安全注意事項與禮儀。\n主要活動：帶領學生參訪與專題相關的科技場域（如科學館、地方創生基地、智慧社區設施等），進行觀察與體驗，蒐集第一手資料。\n綜合活動：各組分享戶外學習的經驗與初步發現。\",完成戶外學習紀錄，包含觀察與體驗內容。,\"實作評量\n資料紀錄單\",0,\"◎戶外學習：社區科技應用與反思\n【戶外教育】\",\"引起動機：回顧上週戶外學習經驗，強調安全與資料記錄的重要性。\n主要活動：持續進行戶外學習，聚焦於社區中科技的實際應用，如智慧交通、環境監測系統、數位學習中心等，並反思其優缺點。\n綜合活動：各組討論戶外學習的心得與遭遇的困難，並思考解決方案。\",完成戶外學習的補充紀錄與初步資料整理。,\"資料紀錄單\n課堂討論\",0,\"◎資料分析：圖表與視覺化\n【性別平等教育】\n【資訊教育】\",\"引起動機：介紹多元圖表類型與數據視覺化工具。\n主要活動：引導學生將蒐集到的數據與質性資料，運用圖表、資訊圖表等方式進行視覺化呈現，並進行初步的趨勢分析，討論性別數據的呈現方式。\n綜合活動：各組分享資料視覺化成果，教師引導學生思考數據背後的故事。\",製作專題資料視覺化圖表。,\"圖表製作\n資訊工具運用\",0,\"◎議題探討：性侵害防治教育進階\n【性別平等教育】\n【安全教育】\",\"引起動機：探討數位時代下的性侵害議題，如網路誘騙、性勒索等。\n主要活動：深入探討網路空間中的性侵害風險，教導學生辨識網路陷阱、保護個人隱私，以及遭遇數位性暴力時的求助方式。\n綜合活動：分組討論如何安全使用網路，並提升數位公民素養。\",完成數位性暴力防治學習單，並討論網路安全策略。,\"學習單\n情境討論\",0,\"◎議題探討：性侵害防治與法律責任\n【性別平等教育】\n【安全教育】\",\"引起動機：介紹與性侵害相關的法律概念與責任。\n主要活動：簡介性侵害相關法律條文，讓學生了解加害者的法律責任與被害者的權益，並學習如何尋求法律協助。\n綜合活動：分組討論在不同情境下如何運用法律知識保護自己與他人，強化性別平等意識。\",完成法律知識問答或情境判斷。,\"問答測驗\n口語表達\",0,\"◎問題剖析：科技倫理與社會影響\n【性別平等教育】\",\"引起動機：引導學生思考科技發展可能帶來的倫理問題與社會影響（如隱私權、數位落差）。\n主要活動：各組運用批判性思考，從分析出的資料中剖析專題問題的深層原因，並探討科技發展對不同群體可能產生的影響，考量性別差異。\n綜合活動：各組分享分析結果，並討論科技倫理的重要性。\",製作問題剖析報告，包含科技倫理考量。,\"報告撰寫\n分析能力\",0,\"◎形成解決方案：科技創新與永續設計\n【家庭教育】\",\"引起動機：介紹設計思考與永續設計的理念。\n主要活動：引導各組針對問題根源，進行腦力激盪，發想運用科技解決生活問題的創新方案，並考量其永續性與社會效益。\n綜合活動：各組分享創意方案，並討論家庭生活中的科技應用。\",提出至少3個科技解決方案的初步構想。,\"創意發想單\n口語發表\",0,\"◎方案設計：科技原型與使用者體驗\n【資訊教育】\n【科技教育】\n【安全教育】\",\"引起動機：介紹使用者中心設計與原型製作的概念。\n主要活動：各組評估發想的科技解決方案，選出最佳方案，並進行細部設計與簡易原型製作（如繪製草圖、製作模型、設計APP介面），注重使用者體驗與資訊科技的整合。同時討論科技如何協助家庭暴力防治。\n綜合活動：各組分享選定的最佳方案與設計細節。\",完成科技解決方案設計書與簡易原型草圖。,\"設計書\n原型草圖\n科技應用\",0,\"◎實作行動：方案實踐與推廣\n【性別平等教育】\",\"引起動機：說明將科技方案付諸實踐的重要性，並提醒數位安全。\n主要活動：各組依據設計書與原型，進行方案的實踐與推廣，如製作數位宣導品、建立簡易網站、進行線上問卷調查，並記錄實作過程與遭遇的問題。強調性別友善的推廣策略。\n綜合活動：各組分享實踐經驗，並討論如何調整方案以提升成效。\",完成方案實踐紀錄與初步修正建議。,\"實作紀錄\n口語發表\",0,\"◎成果準備：數位簡報與影片製作\n【性別平等教育】\n【安全教育】\",\"引起動機：分享優良數位簡報與影片的範例，引導學生思考如何運用多媒體呈現成果。\n主要活動：引導各組將專題研究的過程與成果，製作成數位簡報或短影片，強調多媒體整合與故事性，並確保內容符合性別平等與家庭暴力防治的理念。\n綜合活動：各組進行數位成果的初步演練與互相回饋。\",完成數位簡報或短影片草稿。,\"數位簡報/影片草稿\n同儕互評\",0,\"◎成果發表：科技專題分享會\n【環境教育】\n【家庭教育】\n【安全教育】\",\"引起動機：說明成果發表的流程與注意事項，鼓勵學生展現自信與科技素養。\n主要活動：各組上台發表科技專題研究成果，包含問題發現、科技應用、解決方案與實作行動，並開放師生提問與交流。強調科技在環境與家庭教育上的應用。\n綜合活動：教師統整各組發表內容，給予整體回饋。\",完成科技專題成果發表。,\"口語發表\n數位成果作品\",0,\"◎反思修正：影響評估與未來展望\n【性別平等教育】\n【安全教育】\",\"引起動機：引導學生思考科技方案的社會影響與永續性。\n主要活動：各組回顧科技專題研究的整個歷程，評估方案的實際影響與可能限制，並提出未來可優化或延伸的方向。再次強調性別平等與家庭暴力防治在科技應用上的考量。\n綜合活動：學生分享反思心得，教師鼓勵學生持續創新。\",完成科技專題影響評估報告。,\"影響評估報告\n口語發表\",0,\"◎學習歷程：數位學習檔案建置\n【資訊教育】\n【科技教育】\",\"引起動機：介紹數位學習檔案的重要性與建置方法。\n主要活動：引導學生整理兩學期的PBL專題研究成果與反思，建置個人數位學習檔案（如部落格、線上作品集），展現學習歷程與成長。\n綜合活動：學生互相觀摩數位學習檔案，分享建置心得。\",完成個人數位學習檔案初稿。,\"數位學習檔案\n資訊工具運用\",0,◎綜合應用：PBL專題成果匯報,\"引起動機：總結兩學期PBL專題學習的核心素養與收穫。\n主要活動：各組選取最滿意的專題成果，進行更精煉的匯報，向全班展示PBL學習的成果與價值。\n綜合活動：師生共同回顧兩學期PBL課程，分享印象深刻的學習點滴。\",完成兩學期PBL成果匯報。,\"成果匯報\n口語發表\",0,\"◎成長與展望：PBL學習的終章\n【生涯規劃教育】\",\"引起動機：引導學生思考PBL專題學習對未來學習與生涯發展的影響。\n主要活動：學生分享PBL專題學習對個人能力、態度、價值觀的改變，並將所學應用於未來可能面對的挑戰。\n綜合活動：教師總結PBL課程，鼓勵學生將PBL精神帶入未來生活，持續探索與成長。\",完成PBL學習總結與未來展望。,\"總結報告\n口語發表\",0"
+};
+function loadExample(type){
+  var csv=EXAMPLE_CSV[type];
+  if(!csv){toast('⚠ 找不到此範例',3000);return;}
+  if(!confirm('「載入範例」會覆蓋目前表單上所有已填寫的內容。\n\n確定要載入這份範例嗎？'))return;
+  try{
+    var rows=parseCsv(csv);
+    if(rows.length<2)throw new Error('範例資料不足');
+    var headers=rows[0].map(function(h){return h.trim();});
+    var m={};headers.forEach(function(h,i){m[h]=rows[1][i]||'';});
+    applyDataMap(m);
+    setSem(1);
+    toast('✅ 已載入範例「'+(m.courseTitle||'')+'」，可直接修改後輸出（示範資料，請依實際需求調整）',5000);
+  }catch(err){console.error(err);toast('⚠ 載入範例發生錯誤：'+err.message,5000);}
 }
 
 function exportCsv(){
@@ -3476,8 +3571,42 @@ function buildSem(D,data,sem){
 }
 
 // ── generate (word or pdf) ────────────────────────────────────────
+// ── 輸出前檢查：找出尚未填寫的學習目標、評量方式、週次內容 ──
+function checkBeforeExport(data){
+  var warns=[];
+  var nm={1:'第一學期',2:'第二學期'};
+  if(!(data.courseTitle||'').trim())warns.push('基本資訊：課程名稱尚未填寫');
+  if(!(data.grade||'').trim())warns.push('基本資訊：年級尚未選擇');
+  [1,2].forEach(function(s){
+    var sd=s===1?data.sem1:data.sem2;
+    var cog=(sd.goalCognitive||'').trim(),sk=(sd.goalSkill||'').trim(),at=(sd.goalAttitude||'').trim();
+    if(!cog&&!sk&&!at){warns.push(nm[s]+'：學習目標尚未填寫');}
+    else if(!cog||!sk||!at){warns.push(nm[s]+'：學習目標尚未填寫完整（認知／技能／態度其中一項為空）');}
+    if(!(sd.assessment||'').trim())warns.push(nm[s]+'尚未選擇評量方式');
+    if(!(sd.issues||[]).length)warns.push(nm[s]+'：尚未選擇任何融入議題');
+    var wd=data.weekData||{},skips={};
+    for(var w=1;w<=21;w++){var k='s'+s+'_w'+w,mc=parseInt((wd[k]||{}).mergeCount||0);for(var m=1;m<=mc;m++){if(w+m<=21)skips['s'+s+'_w'+(w+m)]=true;}}
+    var empty=[];
+    for(var w=1;w<=21;w++){var k='s'+s+'_w'+w;if(skips[k])continue;if(!((wd[k]||{}).content||'').trim())empty.push(w);}
+    if(empty.length){
+      if(empty.length>8){warns.push(nm[s]+'：尚有 '+empty.length+' 週未填寫課程內容（第 '+empty.slice(0,8).join('、')+'… 週）');}
+      else{warns.push(nm[s]+'：第 '+empty.join('、')+' 週尚未填寫課程內容');}
+    }
+  });
+  return warns;
+}
+
 async function doGenerate(mode){
   var data=collect();
+  if(mode==='word'){
+    var warns=checkBeforeExport(data);
+    if(warns.length){
+      var msg='📋 產生 Word 前的檢查提醒\n\n以下項目尚未填寫完整：\n\n'
+             +warns.map(function(w){return '・'+w;}).join('\n')
+             +'\n\n按「確定」仍要繼續產生 Word；按「取消」回去補填。';
+      if(!confirm(msg))return;
+    }
+  }
   var btn=document.getElementById(mode==='pdf'?'pdfBtn':'genBtn');
   btn.disabled=true;btn.textContent=mode==='pdf'?'⏳ 準備中...':'⏳ 產生中...';
   try{
