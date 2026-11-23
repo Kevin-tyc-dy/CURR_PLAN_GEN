@@ -9,9 +9,12 @@
 :root{--ink:#1a1a2e;--paper:#fdf8f0;--accent:#c8692a;--accent2:#2a6ec8;--light:#e8ddd0;--cell:#f5f0e8;--sec:#fff;--shad:0 2px 16px rgba(26,26,46,.1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;min-height:100vh}
-header{background:var(--ink);color:#fff;padding:24px 36px 20px;border-bottom:4px solid var(--accent)}
+header{background:var(--ink);color:#fff;padding:24px 36px 20px;border-bottom:4px solid var(--accent);position:relative}
 header h1{font-family:'Noto Serif TC',serif;font-size:1.5rem;font-weight:700;letter-spacing:.05em}
 header p{font-size:.82rem;opacity:.6;margin-top:4px}
+header .manual-link{position:absolute;top:24px;right:36px;display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:#fff;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;text-decoration:none;white-space:nowrap}
+header .manual-link:hover{background:#a85520}
+@media(max-width:680px){header .manual-link{position:static;margin-top:10px}}
 .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 60px}
 .sec{background:var(--sec);border-radius:10px;box-shadow:var(--shad);margin-bottom:22px;overflow:hidden}
 .sh{background:var(--ink);color:#fff;padding:10px 18px;font-family:'Noto Serif TC',serif;font-size:.93rem;font-weight:600;display:flex;align-items:center;gap:7px}
@@ -299,6 +302,7 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 </head>
 <body>
 <header>
+  <a class="manual-link" href="manual.pdf" target="_blank" rel="noopener">📖 使用說明</a>
   <h1>彈性學習課程規劃輔助器</h1>
   <p>統整性主題／專題／議題探究課程 與 其他類課程適用· 支援 CSV 批次匯入 · 議題與能力指標可從清單點選 · 輸出 Word + PDF</p>
 </header>
