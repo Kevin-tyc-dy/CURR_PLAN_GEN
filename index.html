@@ -353,14 +353,16 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
   <div class="sb" id="aiSecBody" style="display:none">
     <p class="nt" style="margin-bottom:11px">一般老師可直接手動填寫表單，<b>不需要</b>這一區。若你有 OpenAI／Gemini／Claude 的 API 金鑰，可在此讓 AI 協助產生課程初稿。</p>
     <details class="ai-free">
-      <summary>💡 沒有 API 金鑰嗎？可免費申請 Google Gemini 金鑰（免信用卡）</summary>
+      <summary>💡 沒有 API 金鑰嗎？可申請 Google Gemini 金鑰（符合資格的個人帳號有免費額度）</summary>
       <ol>
-        <li>前往 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio（aistudio.google.com/app/apikey）</a>。</li>
-        <li>用 Google 帳號登入，點「Get API key／取得 API 金鑰」→「Create API key／建立 API 金鑰」。</li>
-        <li>複製產生的金鑰（以 <code>AIza</code> 開頭）。</li>
-        <li>回到本頁，「AI 服務商」選 <b>Google（Gemini）</b>，將金鑰貼到下方欄位後按「🔑 驗證金鑰」。</li>
+        <li><b>請用個人 Gmail 帳號</b>（年滿 18 歲並已完成 Google 帳號年齡驗證）。學校或機關配發的 Google Workspace 帳號（如 @xxx.edu.tw）通常<b>沒有免費額度</b>，會出現「free tier is not available」錯誤。</li>
+        <li>前往 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio（aistudio.google.com/app/apikey）</a>，點「Create API key／建立 API 金鑰」。</li>
+        <li>複製產生的金鑰：新版金鑰以 <code>AQ.</code> 開頭（Google 自 2026 年起改發「授權金鑰」；舊版 <code>AIza</code> 開頭的標準金鑰已停止受理，請重新建立）。</li>
+        <li>回到本頁，「AI 服務商」選 <b>Google（Gemini）</b>，模型選<b>標示「免費額度可用」</b>的（如 Gemini 3.8 Flash），貼上金鑰後按「🔑 驗證金鑰」。</li>
       </ol>
-      免費額度足夠一般試用（有每分鐘／每日次數限制）；金鑰等同密碼，請勿外流或上傳網路。本工具僅將金鑰暫存於你的瀏覽器本機，關閉分頁即清除。
+      <b>免費方案須知：</b>免費額度以「專案」計算，有每分鐘／每日次數限制（每日於美西時間午夜重置），同一專案多建金鑰<b>不會</b>增加額度；Gemini 4 Argon、3.1 Pro 等旗艦模型不在免費範圍。免費方案送出的內容可能被 Google 用於改善產品，<b>請勿輸入學生個資</b>。<br>
+      <b>若驗證時出現「free tier is not available for this project」：</b>代表 Google 判定此帳號／專案不符合免費資格，在同一專案重建金鑰無法解決。可改用符合資格的個人帳號重新申請、在 AI Studio 綁定帳單改用付費方案，或改用 OpenAI／Claude 金鑰。<br>
+      金鑰等同密碼，請勿外流或上傳網路。本工具僅將金鑰暫存於你的瀏覽器本機，關閉分頁即清除。
     </details>
     <div class="ai-warn">
       <b>⚠ 安全提醒：</b>API 金鑰只儲存於你的瀏覽器（本次工作階段），不會傳送到任何第三方伺服器，但會直接從瀏覽器呼叫對應的 AI 服務。請使用<b>個人帳號的金鑰</b>，不建議在公用電腦或共用環境下使用。關閉分頁後金鑰即清除。
@@ -375,17 +377,19 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
         </select>
       </div>
       <div class="fld">
-        <label>API 金鑰 <span style="color:#aaa;font-weight:400;font-size:.78rem">（sk-... 或 AIza... 等）</span></label>
+        <label>API 金鑰 <span style="color:#aaa;font-weight:400;font-size:.78rem">（sk-…、sk-ant-…、AQ.… 等）</span></label>
         <input type="password" id="aiApiKey" autocomplete="off" placeholder="貼上你的 API 金鑰" oninput="onAiKeyInput()">
       </div>
       <div class="fld">
         <label>模型</label>
-        <select id="aiModel"></select>
+        <select id="aiModel" onchange="onAiModelChange()"></select>
+        <input type="text" id="aiModelCustom" autocomplete="off" spellcheck="false" style="display:none;margin-top:6px" placeholder="輸入模型 ID" oninput="onAiCustomModelInput()">
       </div>
     </div>
     <div class="ai-key-row">
       <div style="font-size:.82rem;color:#666">
-        驗證並啟用後才能使用「✨ 生成」按鈕。金鑰僅供本機呼叫，不會被存到任何伺服器。
+        驗證並啟用後才能使用「✨ 生成」按鈕。金鑰僅供本機呼叫，不會被存到任何伺服器。<br>
+        模型選單為 2026/11 可用版本；若想用其他或更新的模型，可選「✏️ 自訂模型 ID」自行輸入代碼（請以服務商官網公告為準）。
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <span class="ai-key-status unset" id="aiKeyStatus">⚪ 尚未驗證</span>
@@ -412,7 +416,7 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
   <div class="sb">
     <div class="g4">
       <div class="fld"><label>學校名稱</label><input type="text" id="schoolName" value="桃園市大溪區示範國民小學"></div>
-      <div class="fld"><label>學年度</label><input type="text" id="schoolYear" value="115"></div>
+      <div class="fld"><label>學年度</label><select id="schoolYear" onchange="onSchoolYearChange()"><option value="115" selected>115 學年度</option><option value="116">116 學年度</option><option value="117">117 學年度</option><option value="118">118 學年度</option><option value="119">119 學年度</option><option value="120">120 學年度</option><option value="121">121 學年度</option><option value="122">122 學年度</option><option value="123">123 學年度</option><option value="124">124 學年度</option><option value="125">125 學年度</option><option value="126">126 學年度</option><option value="127">127 學年度</option><option value="128">128 學年度</option><option value="129">129 學年度</option><option value="130">130 學年度</option></select></div>
       <div class="fld"><label>年級</label>
         <select id="grade" onchange="onGradeChange()">
           <option value="一">一年級</option>
@@ -552,7 +556,7 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
       <button id="s1btn" class="on" onclick="setSem(1)">第一學期</button>
       <button id="s2btn" onclick="setSem(2)">第二學期</button>
     </div>
-    <p class="nt" style="margin-bottom:9px">※ 第一學期第 1 週：0830-0905；第二學期第 1 週：0207-0213，共 21 週，自動產生</p>
+    <p class="nt" style="margin-bottom:9px" id="wkRangeNote">※ 週次依「基本資訊」所選學年度自動排定</p>
     <div class="ww">
       <table class="wt">
         <thead><tr>
@@ -590,7 +594,7 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 <!-- 程式聲明與使用須知 -->
 <div class="notice-panel" id="noticePanel">
   <button class="notice-toggle" onclick="document.getElementById('noticePanel').classList.toggle('open')">
-    <span>📄 程式聲明與使用須知（個資保護、AI 使用規範、版本資訊、聯絡方式）</span>
+    <span>📄 程式聲明與使用須知（個資保護、AI 使用規範、版本資訊、聯絡方式、權利與授權）</span>
     <span class="nt-arrow">▼</span>
   </button>
   <div class="notice-body">
@@ -638,6 +642,20 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
 
       <h4><span class="nh-num">7</span>更新紀錄</h4>
       <div class="ni-changelog">
+        <b>v1.1（2026/11）</b><span class="ni-version">更新</span>
+        <ul>
+          <li>新增學年度選單，選定後依行事曆原則自動排出上、下學期週次與日期</li>
+          <li>週次規則：上學期 08/30 開學（遇假日順延至週一）至 01/20 當週（遇假日提前）；下學期 02/11 開學（遇假日或農曆除夕～初四順延）至 06/30</li>
+          <li>各學期週數依實際行事曆計算（19～22 週），Word／PDF 輸出、CSV、AI 生成同步依實際週數</li>
+          <li>更新 OpenAI（GPT-6 系列）、Google（Gemini 4／3.x）、Anthropic（Claude 5.5 系列）模型選單</li>
+          <li>新增「自訂模型 ID」模式，可自行輸入任何模型代碼</li>
+          <li>驗證金鑰改為相容思考型模型，並可依錯誤自動調整參數重試</li>
+          <li>Gemini 金鑰申請說明依 Google 現行規定更新：新版金鑰以 AQ. 開頭（舊版 AIza 標準金鑰已停止受理）、免費方案須用符合資格的個人帳號（學校 Workspace 帳號通常無免費額度）、免費額度以專案計算</li>
+          <li>Gemini 金鑰改以 x-goog-api-key 標頭傳送，相容新版授權金鑰且不會出現在網址中</li>
+          <li>Gemini 常見錯誤（不符免費資格、舊版金鑰、額度用盡、需付費模型等）改以中文說明處理方式</li>
+        </ul>
+      </div>
+      <div class="ni-changelog">
         <b>v1.0.0（2026/05）</b><span class="ni-version">初版</span>
         <ul>
           <li>初版公開</li>
@@ -653,9 +671,21 @@ table.wt textarea{font-size:.79rem;min-height:36px;padding:3px 5px}
       <h4><span class="nh-num">8</span>聯絡方式與維護狀態</h4>
       <p>本工具由<b>桃園市大溪區仁和國民小學資訊團隊</b>開發與維護。</p>
       <p>聯絡人：<b>張文宜</b><span class="fc-divider">｜</span><a href="mailto:taco@m2.typs.tyc.edu.tw">realtaco@mail.rhps.tyc.edu.tw</a></p>
-      <p>本工具目前屬<b>個人開發分享版本</b>，提供教育現場自由參考使用。</p>
+      <p>本工具由開發團隊自主開發，並依第 9 點「權利與授權聲明」授權桃園市政府教育局及其所屬學校使用。</p>
       <p><b>本工具為學校自主開發之課程規劃輔助工具，非教育主管機關官方系統。</b>如需對外分享，請一併說明本工具非正式填報平台，產出內容僅供課程設計參考，正式課程計畫填報仍應依各主管機關規定與格式辦理。</p>
       <p>因開發與維護時間有限，<b>不保證即時更新、功能擴充或錯誤修復</b>，敬請見諒。若有使用建議或問題回饋，歡迎來信交流。</p>
+
+      <h4><span class="nh-num">9</span>權利與授權聲明</h4>
+      <p>本工具（含<b>程式碼、Prompt、使用手冊及測試資料</b>）之著作權屬開發團隊<b>桃園市大溪區仁和國民小學資訊團隊</b>所有。</p>
+      <p>自成果繳交之日起，開發團隊以<b>無償、非專屬、永久</b>之方式，授權<b>桃園市政府教育局及其所屬學校</b>使用本工具，授權範圍包括：</p>
+      <ul>
+        <li>於桃園市政府教育局官方網站公開分享與下載</li>
+        <li>於成果網公開分享與下載</li>
+        <li>於 Google Workspace 公開分享與下載</li>
+        <li>於學校內部系統公開分享與下載</li>
+      </ul>
+      <p>本授權為<b>非專屬授權</b>，開發團隊仍保有本工具之著作權，並得持續維護、修改及以其他方式公開分享（如 GitHub 頁面）。</p>
+      <p>本工具所使用之十二年國民基本教育課程綱要內容屬教育部公告資料；內嵌之第三方開源程式庫（如 Word 檔產生元件）依其原授權條款使用。使用者透過 AI 功能產生之內容，依各 AI 服務提供商之使用條款辦理。</p>
 
     </div>
   </div>
@@ -2722,7 +2752,7 @@ function buildWkAiPrompt(userDesc){
   }
   var ctxLines=[];
   for(var i=Math.max(1,w-2);i<w;i++){var u=getUnitOf(sem,i);if(u)ctxLines.push('  - 第 '+i+' 週：'+u);}
-  for(var j=w+mc+1;j<=Math.min(21,w+mc+2);j++){var u2=getUnitOf(sem,j);if(u2)ctxLines.push('  - 第 '+j+' 週：'+u2);}
+  for(var j=w+mc+1;j<=Math.min(wkCount(sem),w+mc+2);j++){var u2=getUnitOf(sem,j);if(u2)ctxLines.push('  - 第 '+j+' 週：'+u2);}
   var ctxStr=ctxLines.length?ctxLines.join('\n'):'  （無相鄰週次資料）';
   // 本週現有內容
   var curD=wkData[k]||{};
@@ -2807,7 +2837,7 @@ async function runWkAiGen(){
   try{
     var provider=document.getElementById('aiProvider').value;
     var apiKey=document.getElementById('aiApiKey').value.trim();
-    var model=document.getElementById('aiModel').value;
+    var model=getAiModel();
     var p=buildWkAiPrompt(desc);
     var combined=p.sys+'\n\n'+p.user;
     var raw=await callAiProvider(provider,apiKey,model,combined,false);
@@ -3084,15 +3114,79 @@ function setAssessment(sem,val){
 }
 
 // ── weeks ────────────────────────────────────────────────────────
+// ── 學年度行事曆：自動排定週次（v1.1）──
+// 上學期：開學 08/30（遇六日順延至下週一）；結束 01/20（遇六日提前至週五），結束日當週為最後一週
+// 下學期：開學 02/11（遇六日順延至下週一；遇農曆除夕～初四順延至初五後的上課日）；結束 06/30（遇六日提前至週五）
+// 週次以「週日～週六」為一週，第 1 週由開學日起算、最後一週至結束日止
+var MAX_WK=22; // CSV 欄位保留的最大週數
+// 農曆春節（初一）國曆日期；表外年份改用瀏覽器內建農曆推算
+var LUNAR_NY={2024:'2-10',2025:'1-29',2026:'2-17',2027:'2-6',2028:'1-26',2029:'2-13',2030:'2-3',2031:'1-23',2032:'2-11',2033:'1-31',2034:'2-19',2035:'2-8',2036:'1-28',2037:'2-15',2038:'2-4',2039:'1-24',2040:'2-12',2041:'2-1',2042:'1-22',2043:'2-10',2044:'1-30',2045:'2-17',2046:'2-6',2047:'1-26',2048:'2-14',2049:'2-2',2050:'1-23'};
+function lunarNewYear(y){
+  if(LUNAR_NY[y]){var p=LUNAR_NY[y].split('-');return new Date(y,+p[0]-1,+p[1]);}
+  try{
+    var f=new Intl.DateTimeFormat('en-US-u-ca-chinese',{month:'numeric',day:'numeric'});
+    for(var d=new Date(y,0,15);d<=new Date(y,1,25);d.setDate(d.getDate()+1)){
+      var q={};f.formatToParts(d).forEach(function(x){q[x.type]=x.value;});
+      if(q.month==='1'&&q.day==='1')return new Date(d);
+    }
+  }catch(e){}
+  return null;
+}
+function _addD(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x;}
+function _isWkend(d){return d.getDay()===0||d.getDay()===6;}
+function curRocYear(){
+  var v=parseInt(String((document.getElementById('schoolYear')||{}).value||'').replace(/[^0-9]/g,''),10);
+  return (v>=90&&v<=200)?v:115;
+}
+function semRange(sem,roc){
+  var y=(roc||curRocYear())+1911,s,e;
+  if(sem===1){
+    s=new Date(y,7,30);while(_isWkend(s))s=_addD(s,1);
+    e=new Date(y+1,0,20);while(_isWkend(e))e=_addD(e,-1);
+  } else {
+    s=new Date(y+1,1,11);
+    var ny=lunarNewYear(y+1),eve=ny?_addD(ny,-1):null,d4=ny?_addD(ny,3):null,g=0;
+    while(g++<30){
+      if(eve&&s>=eve&&s<=d4){s=_addD(d4,1);continue;}
+      if(_isWkend(s)){s=_addD(s,s.getDay()===6?2:1);continue;}
+      break;
+    }
+    e=new Date(y+1,5,30);while(_isWkend(e))e=_addD(e,-1);
+  }
+  return {start:s,end:e};
+}
+function _md(d){return ('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2);}
+function _mdSlash(d){return (d.getMonth()+1)+'/'+d.getDate();}
 function weekDates(sem){
-  var out=[],start=sem===1?new Date(2025,7,30):new Date(2026,1,7);
-  for(var i=0;i<21;i++){
-    var s=new Date(start);s.setDate(s.getDate()+i*7);
-    var e=new Date(s);e.setDate(e.getDate()+6);
-    var f=function(d){return ('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2)};
-    out.push({w:i+1,lb:f(s)+'-'+f(e)});
+  var r=semRange(sem),out=[],ws=_addD(r.start,-r.start.getDay()),i=0;
+  while(ws<=r.end&&i<30){
+    var we=_addD(ws,6),a=i===0?r.start:ws,b=we>r.end?r.end:we;
+    out.push({w:i+1,lb:_md(a)+'-'+_md(b)});
+    ws=_addD(ws,7);i++;
   }
   return out;
+}
+function wkCount(sem){return weekDates(sem).length;}
+function semRangeText(sem){var r=semRange(sem),wd='日一二三四五六';return r.start.getFullYear()+'/'+_mdSlash(r.start)+'（'+wd.charAt(r.start.getDay())+'）～'+r.end.getFullYear()+'/'+_mdSlash(r.end)+'（'+wd.charAt(r.end.getDay())+'）';}
+function updateWkNote(){
+  var el=document.getElementById('wkRangeNote');if(!el)return;
+  el.innerHTML='※ '+curRocYear()+' 學年度週次已依行事曆原則自動排定：第一學期 '+semRangeText(1)+'，共 <b>'+wkCount(1)+'</b> 週；第二學期 '+semRangeText(2)+'，共 <b>'+wkCount(2)+'</b> 週（每週以週日～週六計）';
+}
+function ensureYearOption(v){
+  var sel=document.getElementById('schoolYear');if(!sel||sel.tagName!=='SELECT')return;
+  v=String(v||'').replace(/[^0-9]/g,'');if(!v)return;
+  for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===v)return;}
+  var o=document.createElement('option');o.value=v;o.textContent=v+' 學年度';sel.appendChild(o);
+}
+function onSchoolYearChange(){
+  try{saveWk();}catch(e){}
+  updateWkNote();
+  buildWk();
+  // 週數減少時，提醒超出範圍但仍有內容的週次
+  var lost=[];
+  [1,2].forEach(function(s){var n=wkCount(s);for(var w=n+1;w<=MAX_WK+2;w++){var d=wkData['s'+s+'_w'+w];if(d&&((d.unit||'')+(d.content||'')+(d.task||'')+(d.eval||'')).trim())lost.push('第'+(s===1?'一':'二')+'學期第 '+w+' 週');}});
+  if(lost.length)toast('⚠ 本學年度週數較少，'+lost.join('、')+' 的內容暫不顯示、也不會輸出（切回原學年度即可恢復）',6000);
+  else toast('📅 已依 '+curRocYear()+' 學年度重新排定週次');
 }
 var mergeMap={};
 // Week ghost defaults: WK_GHOST[k] = {unit,content,task,eval} 預設提示
@@ -3111,15 +3205,15 @@ function buildWk(){
   var dates=weekDates(curSem),skips={};
   dates.forEach(function(x){
     var k='s'+curSem+'_w'+x.w,d=wkData[k]||{},mc=parseInt(d.mergeCount||0);
-    for(var m=1;m<=mc;m++){if(x.w+m<=21)skips['s'+curSem+'_w'+(x.w+m)]=true;}
+    for(var m=1;m<=mc;m++){if(x.w+m<=dates.length)skips['s'+curSem+'_w'+(x.w+m)]=true;}
   });
   dates.forEach(function(x){
     var k='s'+curSem+'_w'+x.w,d=wkData[k]||{unit:'',content:'',task:'',eval:'',mergeCount:0},mc=parseInt(d.mergeCount||0),isAbs=skips[k];
     var tr=document.createElement('tr');tr.dataset.k=k;
     if(isAbs){tr.dataset.merged='1';tr.style.display='none';tb.appendChild(tr);return;}
     var wLabel='第 '+x.w+' 週',dateLabel=x.lb;
-    if(mc>0&&x.w+mc<=21){wLabel='第 '+x.w+'–'+(x.w+mc)+' 週';dateLabel=x.lb.split('-')[0]+'-'+dates[x.w+mc-1].lb.split('-')[1];}
-    var canMerge=(x.w+mc)<21&&!skips['s'+curSem+'_w'+(x.w+mc+1)],canSplit=mc>0;
+    if(mc>0&&x.w+mc<=dates.length){wLabel='第 '+x.w+'–'+(x.w+mc)+' 週';dateLabel=x.lb.split('-')[0]+'-'+dates[x.w+mc-1].lb.split('-')[1];}
+    var canMerge=(x.w+mc)<dates.length&&!skips['s'+curSem+'_w'+(x.w+mc+1)],canSplit=mc>0;
     var mb='<button class="mbtn wk-ai-btn" onclick="openWkAiGen(\''+k+'\')" title="針對本週個別呼叫 AI 生成">✨ AI 生成此週</button>';
     if(canMerge)mb+='<button class="mbtn merge-btn" onclick="doMerge(\''+k+'\')">↕ 合併下週</button>';
     if(canSplit)mb+='<button class="mbtn split-btn" onclick="doSplit(\''+k+'\')">✂ 取消合併</button>';
@@ -3208,7 +3302,7 @@ function buildCsvHeaders(){
     h.push('s'+s+'_goalCognitive','s'+s+'_goalSkill','s'+s+'_goalAttitude','s'+s+'_assessment');
   }
   for(var s=1;s<=2;s++){
-    for(var w=1;w<=21;w++){
+    for(var w=1;w<=MAX_WK;w++){
       h.push('s'+s+'_w'+w+'_unit','s'+s+'_w'+w+'_content','s'+s+'_w'+w+'_task','s'+s+'_w'+w+'_eval','s'+s+'_w'+w+'_merge');
     }
   }
@@ -3317,6 +3411,11 @@ function setField(id,val){
     el.classList.remove('is-ghost');
     el.dataset.ghost='';
   }
+  if(id==='schoolYear'){
+    var yv=String(val||'').replace(/[^0-9]/g,'')||'115';
+    ensureYearOption(yv);el.value=yv;updateWkNote();
+    return;
+  }
   if(el.tagName==='SELECT'){
     // 容許「一」「一年級」「1」等
     var v=String(val||'').trim();
@@ -3376,7 +3475,7 @@ function applyDataMap(map){
   wkData={};
   WK_GHOST={};WK_GHOST_CLEARED={};
   for(var s=1;s<=2;s++){
-    for(var w=1;w<=21;w++){
+    for(var w=1;w<=MAX_WK;w++){
       var pfx='s'+s+'_w'+w;
       var unit=map[pfx+'_unit']||'',content=map[pfx+'_content']||'',task=map[pfx+'_task']||'',ev=map[pfx+'_eval']||'',mc=parseInt(map[pfx+'_merge'])||0;
       if(unit||content||task||ev||mc)wkData[pfx]={unit:unit,content:content,task:task,eval:ev,mergeCount:mc};
@@ -3472,7 +3571,7 @@ function buildPrintTable(data,sem){
   var absorbed={};
   dates.forEach(function(x){
     var k='s'+sem+'_w'+x.w,d=data.weekData[k]||{},mc=parseInt(d.mergeCount||0);
-    for(var m=1;m<=mc;m++){if(x.w+m<=21)absorbed['s'+sem+'_w'+(x.w+m)]=true;}
+    for(var m=1;m<=mc;m++){if(x.w+m<=dates.length)absorbed['s'+sem+'_w'+(x.w+m)]=true;}
   });
   var iss=(sd.issues||[]).map(function(i){return(i.title?'<b>【'+eh(i.title)+'】</b><br>':'')+eh(i.indicators).replace(/\n/g,'<br>')}).join('<br>');
   var pf=(sd.performances||[]).map(function(p){return(p.domain?'<b>【'+eh(p.domain)+'】</b><br>':'')+eh(p.indicators).replace(/\n/g,'<br>')}).join('<br>');
@@ -3498,7 +3597,7 @@ function buildPrintTable(data,sem){
     +'<tr><td class="label-cell">學習內容</td><td colspan="5">'+ct+'</td></tr>'
     +'<tr><td class="label-cell" colspan="2">學習目標</td><td colspan="5">'+goalHtml+'</td></tr>'
     +'<tr><td class="label-cell" colspan="2">評量方式</td><td colspan="5">'+eh(sd.assessment||'')+'</td></tr>'
-    +'<tr>'
+    +'<tr class="hd">'
     +'<td class="hdr-cell" colspan="2" style="width:13%;text-align:center">週次/日期</td>'
     +'<td class="hdr-cell" style="width:17%;text-align:center">單元名稱</td>'
     +'<td class="hdr-cell" colspan="2" style="width:40%;text-align:center">課程內容</td>'
@@ -3510,8 +3609,8 @@ function buildPrintTable(data,sem){
     var k='s'+sem+'_w'+x.w,d=data.weekData[k]||{},mc=parseInt(d.mergeCount||0),isAbs=absorbed[k];
     if(isAbs)return;
     var wNum=String(x.w),wDate=x.lb;
-    if(mc>0&&x.w+mc<=21){wNum=x.w+'–'+(x.w+mc);wDate=x.lb.split('-')[0]+'-'+dates[x.w+mc-1].lb.split('-')[1];}
-    html+='<tr>'
+    if(mc>0&&x.w+mc<=dates.length){wNum=x.w+'–'+(x.w+mc);wDate=x.lb.split('-')[0]+'-'+dates[x.w+mc-1].lb.split('-')[1];}
+    html+='<tr class="wk">'
       +'<td colspan="2" style="text-align:center;vertical-align:top"><b>'+eh(wNum)+'</b><br><span style="font-size:8pt">'+eh(wDate)+'</span></td>'
       +'<td style="vertical-align:top">'+eh(d.unit||'').replace(/\n/g,'<br>')+'</td>'
       +'<td colspan="2" style="vertical-align:top">'+eh(d.content||'').replace(/\n/g,'<br>')+'</td>'
@@ -3521,6 +3620,48 @@ function buildPrintTable(data,sem){
   });
   html+='</table>';
   return html;
+}
+
+// 只輸出課程計畫表格：在獨立的隱藏框架中列印，不帶系統介面；
+// @page 邊界設為 0 讓瀏覽器不印頁首頁尾（網址、標題、日期、頁碼），
+// 版面留白改由每頁重複的 thead/tfoot 空白列與左右內距提供。
+function printCleanPdf(data){
+  var old=document.getElementById('pdfFrame');if(old)old.remove();
+  var f=document.createElement('iframe');
+  f.id='pdfFrame';
+  f.setAttribute('aria-hidden','true');
+  f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+  document.body.appendChild(f);
+  function page(inner,brk){
+    return '<table class="pg"'+(brk?' style="break-before:page;page-break-before:always"':'')+'>'
+      +'<thead><tr><td><div class="sp-top"></div></td></tr></thead>'
+      +'<tfoot><tr><td><div class="sp-bot"></div></td></tr></tfoot>'
+      +'<tbody><tr><td>'+inner+'</td></tr></tbody></table>';
+  }
+  var css='@page{size:A4 landscape;margin:0}'
+    +'*{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-sizing:border-box}'
+    +'html,body{margin:0;padding:0;background:#fff}'
+    +'body{padding:0 10mm;font-family:"標楷體","DFKai-SB",serif;font-size:10pt;color:#000}'
+    +'table.pg{width:100%;border-collapse:collapse}'
+    +'table.pg>thead>tr>td,table.pg>tfoot>tr>td,table.pg>tbody>tr>td{padding:0;border:0}'
+    +'.sp-top{height:12mm}.sp-bot{height:10mm}'
+    +'table.ptbl{width:100%;border-collapse:collapse;table-layout:fixed;font-family:"標楷體","DFKai-SB",serif;font-size:9pt}'
+    +'table.ptbl td,table.ptbl th{border:1px solid #000;padding:3pt 4pt;vertical-align:top;word-break:break-all}'
+    +'table.ptbl tr.wk,table.ptbl tr.hd{break-inside:avoid;page-break-inside:avoid}'
+    +'table.ptbl tr.hd{break-after:avoid;page-break-after:avoid}'
+    +'table.ptbl .hdr-cell{background:#1a1a2e;color:#fff;font-weight:700;text-align:center;font-size:9pt}'
+    +'table.ptbl .label-cell{text-align:center;vertical-align:middle;font-weight:700;background:#f0ede6}'
+    +'table.ptbl .title-cell{text-align:center;font-weight:700;font-size:12pt;background:#f0ede6}';
+  var html='<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><title>\u200b</title><style>'+css+'</style></head><body>'
+    +page(buildPrintTable(data,1),false)
+    +page(buildPrintTable(data,2),true)
+    +'</body></html>';
+  var d=f.contentWindow.document;
+  d.open();d.write(html);d.close();
+  setTimeout(function(){
+    try{f.contentWindow.focus();f.contentWindow.print();}
+    catch(e){toast('❌ 無法開啟列印：'+e.message,5000);}
+  },300);
 }
 
 // ════════════════════════════════════════
@@ -3578,12 +3719,12 @@ function buildSem(D,data,sem){
   rows.push(new TableRow({children:[C(P('評量方式',{al:AlignmentType.CENTER}),1271,{sp:2}),C(P(sd.assessment||''),8505,{sp:5})]}));
   rows.push(new TableRow({children:[C(P('週次\n日期',{b:true,al:AlignmentType.CENTER}),1271,{sp:2}),C(P('單元名稱',{b:true,al:AlignmentType.CENTER}),1418),C(P('課程內容',{b:true,al:AlignmentType.CENTER}),4110,{sp:2}),C(P('表現任務',{b:true,al:AlignmentType.CENTER}),1418),C(P('學習評量',{b:true,al:AlignmentType.CENTER}),1559)]}));
   var dates=weekDates(sem),absorbed={};
-  dates.forEach(function(x){var k='s'+sem+'_w'+x.w,d=(data.weekData&&data.weekData[k])||{},mc=parseInt(d.mergeCount||0);for(var m=1;m<=mc;m++){if(x.w+m<=21)absorbed['s'+sem+'_w'+(x.w+m)]=true;}});
+  dates.forEach(function(x){var k='s'+sem+'_w'+x.w,d=(data.weekData&&data.weekData[k])||{},mc=parseInt(d.mergeCount||0);for(var m=1;m<=mc;m++){if(x.w+m<=dates.length)absorbed['s'+sem+'_w'+(x.w+m)]=true;}});
   dates.forEach(function(x){
     var k='s'+sem+'_w'+x.w,d=(data.weekData&&data.weekData[k])||{},mc=parseInt(d.mergeCount||0),isAbs=absorbed[k];
     if(isAbs)return;
     var wNum=String(x.w),wDate=x.lb;
-    if(mc>0&&x.w+mc<=21){wNum=x.w+'–'+(x.w+mc);wDate=x.lb.split('-')[0]+'-'+dates[x.w+mc-1].lb.split('-')[1];}
+    if(mc>0&&x.w+mc<=dates.length){wNum=x.w+'–'+(x.w+mc);wDate=x.lb.split('-')[0]+'-'+dates[x.w+mc-1].lb.split('-')[1];}
     rows.push(new TableRow({children:[C([P(wNum,{b:true,al:AlignmentType.CENTER}),P(wDate,{al:AlignmentType.CENTER,sz:SZS})],1271,{sp:2,va:VerticalAlign.TOP}),C(T2P(d.unit||''),1418,{va:VerticalAlign.TOP}),C(T2P(d.content||''),4110,{sp:2,va:VerticalAlign.TOP}),C(T2P(d.task||''),1418,{va:VerticalAlign.TOP}),C(T2P(d.eval||''),1559,{va:VerticalAlign.TOP})]}));
   });
   return new Table({width:{size:TW,type:WidthType.DXA},columnWidths:cols,rows:rows});
@@ -3604,9 +3745,9 @@ function checkBeforeExport(data){
     if(!(sd.assessment||'').trim())warns.push(nm[s]+'尚未選擇評量方式');
     if(!(sd.issues||[]).length)warns.push(nm[s]+'：尚未選擇任何融入議題');
     var wd=data.weekData||{},skips={};
-    for(var w=1;w<=21;w++){var k='s'+s+'_w'+w,mc=parseInt((wd[k]||{}).mergeCount||0);for(var m=1;m<=mc;m++){if(w+m<=21)skips['s'+s+'_w'+(w+m)]=true;}}
+    for(var w=1;w<=wkCount(s);w++){var k='s'+s+'_w'+w,mc=parseInt((wd[k]||{}).mergeCount||0);for(var m=1;m<=mc;m++){if(w+m<=wkCount(s))skips['s'+s+'_w'+(w+m)]=true;}}
     var empty=[];
-    for(var w=1;w<=21;w++){var k='s'+s+'_w'+w;if(skips[k])continue;if(!((wd[k]||{}).content||'').trim())empty.push(w);}
+    for(var w=1;w<=wkCount(s);w++){var k='s'+s+'_w'+w;if(skips[k])continue;if(!((wd[k]||{}).content||'').trim())empty.push(w);}
     if(empty.length){
       if(empty.length>8){warns.push(nm[s]+'：尚有 '+empty.length+' 週未填寫課程內容（第 '+empty.slice(0,8).join('、')+'… 週）');}
       else{warns.push(nm[s]+'：第 '+empty.join('、')+' 週尚未填寫課程內容');}
@@ -3630,16 +3771,7 @@ async function doGenerate(mode){
   btn.disabled=true;btn.textContent=mode==='pdf'?'⏳ 準備中...':'⏳ 產生中...';
   try{
     if(mode==='pdf'){
-      var printSec=document.getElementById('printSec');
-      printSec.innerHTML=
-        buildPrintTable(data,1)
-        +'<div class="print-page-break"></div>'
-        +buildPrintTable(data,2);
-      printSec.style.display='block';
-      setTimeout(function(){
-        window.print();
-        setTimeout(function(){printSec.style.display='none';},500);
-      },200);
+      printCleanPdf(data);
       toast('🖨 列印對話框已開啟，請選擇「另存為 PDF」！',5000);
     } else {
       var D=docx;
@@ -3670,30 +3802,49 @@ async function doGenerate(mode){
 // ════════════════════════════════════════
 // AI 自動生成
 // ════════════════════════════════════════
+// 模型清單（2026/11 更新）；選「✏️ 自訂模型 ID」可自行輸入任何服務商提供的模型代碼
 var AI_MODELS={
   openai:[
-    {id:'gpt-5.5',label:'GPT-5.5（旗艦）'},
-    {id:'gpt-5.5-pro',label:'GPT-5.5 Pro'},
-    {id:'gpt-5.4',label:'GPT-5.4'},
-    {id:'gpt-5.4-mini',label:'GPT-5.4 Mini（速度優先）'},
-    {id:'gpt-5.4-nano',label:'GPT-5.4 Nano（最低成本）'},
-    {id:'gpt-4o',label:'GPT-4o（舊版）'},
-    {id:'gpt-4o-mini',label:'GPT-4o Mini（舊版）'}
+    {id:'gpt-6.1-sol',label:'GPT-6.1 Sol（推薦・品質／成本均衡）'},
+    {id:'gpt-6-astra',label:'GPT-6 Astra（旗艦・最高品質・較貴）'},
+    {id:'gpt-6.1-terra',label:'GPT-6.1 Terra（速度優先）'},
+    {id:'gpt-6-luna',label:'GPT-6 Luna（最低成本）'}
   ],
   google:[
-    {id:'gemini-2.5-pro',label:'Gemini 2.5 Pro（旗艦・推薦）'},
-    {id:'gemini-2.5-flash',label:'Gemini 2.5 Flash（速度／品質均衡）'},
-    {id:'gemini-2.5-flash-lite',label:'Gemini 2.5 Flash Lite（最低成本）'},
-    {id:'gemini-3-flash-preview',label:'Gemini 3 Flash（預覽版）'},
-    {id:'gemini-2.0-flash',label:'Gemini 2.0 Flash（舊版・將下架）'}
+    {id:'gemini-3.8-flash',label:'Gemini 3.8 Flash（推薦・免費額度可用）'},
+    {id:'gemini-4-argon',label:'Gemini 4 Argon（旗艦・需付費帳戶）'},
+    {id:'gemini-3.1-pro-preview',label:'Gemini 3.1 Pro（預覽版・需付費帳戶）'},
+    {id:'gemini-3.5-flash-lite',label:'Gemini 3.5 Flash-Lite（低成本・免費額度可用）'},
+    {id:'gemini-3.1-flash-lite',label:'Gemini 3.1 Flash-Lite（最低成本・免費額度可用）'}
   ],
   anthropic:[
-    {id:'claude-opus-4-7',label:'Claude Opus 4.7（旗艦）'},
-    {id:'claude-opus-4-6',label:'Claude Opus 4.6'},
-    {id:'claude-sonnet-4-6',label:'Claude Sonnet 4.6（推薦）'},
-    {id:'claude-haiku-4-5-20251001',label:'Claude Haiku 4.5（速度優先）'}
+    {id:'claude-opus-5-5',label:'Claude Opus 5.5（推薦・旗艦）'},
+    {id:'claude-fable-5-1',label:'Claude Fable 5.1（最高階・較貴）'},
+    {id:'claude-sonnet-5-5',label:'Claude Sonnet 5.5（速度／品質均衡）'},
+    {id:'claude-haiku-5-5',label:'Claude Haiku 5.5（速度優先・最低成本）'}
   ]
 };
+var AI_CUSTOM_MODEL='__custom__';
+var AI_CUSTOM_HINT={openai:'例：gpt-6.1-sol',google:'例：gemini-3.8-flash',anthropic:'例：claude-opus-5-5'};
+function getAiModel(){
+  var sel=document.getElementById('aiModel');
+  if(sel.value===AI_CUSTOM_MODEL)return (document.getElementById('aiModelCustom').value||'').trim();
+  return sel.value;
+}
+function onAiModelChange(){
+  var p=document.getElementById('aiProvider').value;
+  var isC=document.getElementById('aiModel').value===AI_CUSTOM_MODEL;
+  var inp=document.getElementById('aiModelCustom');
+  inp.style.display=isC?'':'none';
+  inp.placeholder=AI_CUSTOM_HINT[p]||'輸入模型 ID';
+  if(isC){try{inp.value=localStorage.getItem('ai_custom_model_'+p)||inp.value||'';}catch(e){}inp.focus();}
+  onAiKeyInput();
+}
+function onAiCustomModelInput(){
+  var p=document.getElementById('aiProvider').value;
+  try{localStorage.setItem('ai_custom_model_'+p,(document.getElementById('aiModelCustom').value||'').trim());}catch(e){}
+  onAiKeyInput();
+}
 var aiKeyVerified=false;
 
 function onAiProviderChange(){
@@ -3703,6 +3854,9 @@ function onAiProviderChange(){
   (AI_MODELS[p]||[]).forEach(function(m){
     var o=document.createElement('option');o.value=m.id;o.textContent=m.label;sel.appendChild(o);
   });
+  var oc=document.createElement('option');oc.value=AI_CUSTOM_MODEL;oc.textContent='✏️ 自訂模型 ID…';sel.appendChild(oc);
+  var ci=document.getElementById('aiModelCustom');
+  if(ci){ci.style.display='none';ci.value='';}
   // 切換服務商時清除已驗證狀態
   setAiKeyStatus('unset','⚪ 尚未驗證');
   aiKeyVerified=false;
@@ -3740,7 +3894,7 @@ function aiToggleLog(){
 async function testAiKey(){
   var provider=document.getElementById('aiProvider').value;
   var apiKey=document.getElementById('aiApiKey').value.trim();
-  var model=document.getElementById('aiModel').value;
+  var model=getAiModel();
   if(!apiKey){toast('⚠ 請先貼上 API 金鑰',3500);return;}
   setAiKeyStatus('testing','⏳ 驗證中…');
   document.getElementById('aiTestBtn').disabled=true;
@@ -3772,7 +3926,9 @@ async function testAiKey(){
 // ── 通用呼叫：依 provider 分派，回傳純文字 ──
 async function callAiProvider(provider,apiKey,model,userPrompt,isTest){
   var sysMsg='你是一個助理，請依使用者要求回應。';
-  var maxTok=isTest?100:32000;
+  if(!model)throw new Error('請先選擇模型，或在「自訂模型 ID」欄位輸入模型代碼');
+  // 新一代模型多為思考（推理）模型，思考 token 會計入上限；驗證時保留足夠空間避免空白回應
+  var maxTok=isTest?1024:32000;
   if(provider==='openai'){
     return await callOpenAI(apiKey,model,sysMsg,userPrompt,maxTok,!isTest);
   } else if(provider==='google'){
@@ -3790,27 +3946,46 @@ async function callOpenAI(apiKey,model,sys,user,maxTok,jsonMode){
     max_completion_tokens:maxTok
   };
   if(jsonMode)body.response_format={type:'json_object'};
-  var r=await fetch('https://api.openai.com/v1/chat/completions',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
-    body:JSON.stringify(body)
-  });
-  var data=await r.json();
-  if(!r.ok){
+  // 推理模型（GPT-5／GPT-6 系列、o 系列）驗證時降低推理強度，加快回應
+  if(!jsonMode && /^(gpt-5|gpt-6|o\d)/.test(model))body.reasoning_effort='low';
+  var r,data;
+  for(var attempt=0;attempt<4;attempt++){
+    r=await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify(body)
+    });
+    data=await r.json();
+    if(r.ok)break;
     var msg=(data.error&&(data.error.message||data.error.code))||('HTTP '+r.status);
-    // 部分舊模型不接受 max_completion_tokens，自動 retry 用 max_tokens
-    if(/max_completion_tokens/i.test(msg)){
-      delete body.max_completion_tokens;body.max_tokens=maxTok;
-      r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify(body)});
-      data=await r.json();
-      if(!r.ok)throw new Error((data.error&&data.error.message)||('HTTP '+r.status));
-    } else {
-      throw new Error(msg);
-    }
+    // 依錯誤訊息自動調整參數後重試（相容新舊模型／自訂模型）
+    if(/max_completion_tokens/i.test(msg)&&body.max_completion_tokens){delete body.max_completion_tokens;body.max_tokens=maxTok;continue;}
+    if(/reasoning_effort/i.test(msg)&&body.reasoning_effort){delete body.reasoning_effort;continue;}
+    if(/response_format/i.test(msg)&&body.response_format){delete body.response_format;continue;}
+    throw new Error(msg);
   }
+  if(!r.ok)throw new Error((data.error&&data.error.message)||('HTTP '+r.status));
   var ch=data.choices&&data.choices[0];
   if(!ch)throw new Error('OpenAI 回應格式異常');
   return (ch.message&&ch.message.content)||'';
+}
+
+// Gemini 常見錯誤轉為中文說明（依 2026 年現行金鑰與免費方案規定）
+function geminiFriendlyError(msg,status){
+  var m=String(msg||'');
+  if(/free tier is not available|denied access|quota tier unavailable/i.test(m))
+    return '此 Google 帳號／專案不符合 Gemini 免費方案資格（學校 Workspace 帳號通常沒有免費額度；在同一專案重建金鑰無效）。請改用已完成年齡驗證的個人 Gmail 帳號重新建立金鑰、在 AI Studio 綁定帳單改用付費方案，或改用 OpenAI／Claude。（原始訊息：'+m+'）';
+  if(/unrestricted|ACCESS_TOKEN_TYPE_UNSUPPORTED|standard (api )?key/i.test(m))
+    return '此金鑰為已停用的舊版標準金鑰（AIza 開頭）或未加限制，Google 已不再受理。請到 Google AI Studio 重新建立金鑰（新版以 AQ. 開頭）。（原始訊息：'+m+'）';
+  if(/api key not valid|API_KEY_INVALID|invalid api key/i.test(m))
+    return '金鑰無效，請確認是否完整複製（新版金鑰以 AQ. 開頭），或到 Google AI Studio 重新建立。（原始訊息：'+m+'）';
+  if(status===429||/RESOURCE_EXHAUSTED|quota/i.test(m))
+    return '已達免費額度的每分鐘或每日次數上限（每日於美西時間午夜重置），請稍後再試或改用其他模型。（原始訊息：'+m+'）';
+  if(/billing|paid tier|prepay/i.test(m))
+    return '此模型或用量需付費方案（如 Gemini 4 Argon、3.1 Pro），請改選標示「免費額度可用」的模型，或在 AI Studio 綁定帳單。（原始訊息：'+m+'）';
+  if(/not found|is not supported|404/i.test(m))
+    return '找不到此模型或已下架，請改選其他模型或確認自訂模型 ID。（原始訊息：'+m+'）';
+  return m;
 }
 
 async function callGemini(apiKey,model,sys,user,maxTok,jsonMode,isTest){
@@ -3818,14 +3993,17 @@ async function callGemini(apiKey,model,sys,user,maxTok,jsonMode,isTest){
   // - 2.5 Pro：無法關閉思考（最低 128 token），驗證測試需要更多 token
   // - 2.5 Flash：可設 thinkingBudget=0 完全關閉
   // - 2.5 Flash Lite：可關閉，影響較小
-  var isThinkingModel=/^gemini-2\.5|^gemini-3/.test(model);
-  var isProThinking=/^gemini-2\.5-pro|^gemini-3-pro/.test(model);
+  // Gemini 3.x／4 系列改用 thinkingLevel（minimal/low/medium/high）控制思考量
+  var isThinkingModel=/^gemini-(2\.5|3|4)/.test(model);
+  var isProThinking=/^gemini-(2\.5-pro|3(\.\d+)?-pro|4)/.test(model);
+  var isNewGen=/^gemini-(3|4)/.test(model);
   var actualMaxTok=maxTok;
-  if(isTest && isProThinking){
-    // Pro 系列不能關思考，驗證測試必須給足夠空間（128 思考預算 + 緩衝）
-    actualMaxTok=Math.max(maxTok,500);
+  if(isTest && isThinkingModel){
+    // 思考模型驗證測試必須給足夠空間
+    actualMaxTok=Math.max(maxTok,1024);
   }
-  var url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent?key='+encodeURIComponent(apiKey);
+  // 金鑰改以 x-goog-api-key 標頭傳送（新版 AQ. 授權金鑰的官方建議方式，舊版金鑰亦相容，且不會出現在網址中）
+  var url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent';
   var body={
     systemInstruction:{parts:[{text:sys}]},
     contents:[{role:'user',parts:[{text:user}]}],
@@ -3840,15 +4018,21 @@ async function callGemini(apiKey,model,sys,user,maxTok,jsonMode,isTest){
     ]
   };
   // 驗證測試時，對可關思考的模型（2.5 Flash 及 Flash Lite）關閉 thinking，避免 token 被吃光
-  if(isTest && isThinkingModel && !isProThinking){
-    body.generationConfig.thinkingConfig={thinkingBudget:0};
+  if(isTest && isThinkingModel){
+    if(isNewGen)body.generationConfig.thinkingConfig={thinkingLevel:'low'};
+    else if(!isProThinking)body.generationConfig.thinkingConfig={thinkingBudget:0};
   }
   if(jsonMode)body.generationConfig.responseMimeType='application/json';
-  var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  var data=await r.json();
-  if(!r.ok){
+  var r,data;
+  for(var attempt=0;attempt<3;attempt++){
+    r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':apiKey},body:JSON.stringify(body)});
+    data=await r.json();
+    if(r.ok)break;
     var msg=(data.error&&(data.error.message||data.error.status))||('HTTP '+r.status);
-    throw new Error(msg);
+    // 自訂／新模型若不接受思考或安全設定參數，移除後重試
+    if(/thinking/i.test(msg)&&body.generationConfig.thinkingConfig){delete body.generationConfig.thinkingConfig;continue;}
+    if(/safety|harm_category/i.test(msg)&&body.safetySettings){delete body.safetySettings;continue;}
+    throw new Error(geminiFriendlyError(msg,r.status));
   }
   // promptFeedback：整個 prompt 被擋下時會出現
   if(data.promptFeedback && data.promptFeedback.blockReason){
@@ -3865,7 +4049,7 @@ async function callGemini(apiKey,model,sys,user,maxTok,jsonMode,isTest){
     if(fr==='RECITATION')throw new Error('Gemini 偵測到引用版權內容而中止（finishReason: RECITATION）');
     if(fr==='MAX_TOKENS'){
       if(isProThinking){
-        throw new Error('Gemini 2.5/3 Pro 為思考模型，思考過程會佔用 token 上限。建議改用「Gemini 2.5 Flash」進行驗證或一般生成，或在生成大量內容時注意此限制。');
+        throw new Error('Gemini 2.5/3 Pro 為思考模型，思考過程會佔用 token 上限。建議改用「Gemini 3.8 Flash」進行驗證或一般生成，或在生成大量內容時注意此限制。');
       }
       throw new Error('輸出 token 達上限被截斷（finishReason: MAX_TOKENS）。可能原因：思考模型佔用過多 token、或實際內容過長。');
     }
@@ -3959,7 +4143,7 @@ function buildAiSystemPrompt(){
     '    "assessment": string                // 例：「問思討論、口說發表、學習單、實作練習」',
     '  },',
     '  "sem2": { ...同上... },',
-    '  "weeks": {                            // 鍵為 "s1_w1" ~ "s1_w21"、"s2_w1" ~ "s2_w21"',
+    '  "weeks": {                            // 鍵為 "s1_w1" ~ "s1_w'+wkCount(1)+'"、"s2_w1" ~ "s2_w'+wkCount(2)+'"',
     '    "s1_w1": {',
     '      "unit": string,                  // 單元名稱（例：「◎開心上學樂閱趣」）',
     '      "content": string,               // 課程內容（多行用 \\n）',
@@ -3974,12 +4158,12 @@ function buildAiSystemPrompt(){
     '- 議題 title 一律使用 19 項議題的「完整中文名稱」（例：「家庭教育」），不要使用簡稱。',
     '- 能力指標請使用真實合理的 12 年國教代碼格式（例：「國1-I-1」「國Ac-I-2」「家E1」）。',
     '- 學習表現／學習內容的 domain 必須為本年級可選領域之一。',
-    '- 各學期共 21 週課程，全部要排入內容。',
+    '- 本學年度（'+(document.getElementById('schoolYear').value||'')+' 學年度）依行事曆自動排定：上學期共 '+wkCount(1)+' 週（'+semRangeText(1)+'）、下學期共 '+wkCount(2)+' 週（'+semRangeText(2)+'），全部要排入內容。',
     '- 必須填入兩個學期完整內容：sem1、sem2 的 issues、performances、contents、goalCognitive、goalSkill、goalAttitude、assessment 全部欄位。',
-    '- ★ weeks 必須完整輸出 42 週：上學期 s1_w1～s1_w21（共 21 週）、下學期 s2_w1～s2_w21（共 21 週），不可省略、不可只填前幾週。每一週都要有 unit、content、task、eval 內容；issueTags 視主題需要填入。',
+    '- ★ weeks 必須完整輸出 '+(wkCount(1)+wkCount(2))+' 週：上學期 s1_w1～s1_w'+wkCount(1)+'（共 '+wkCount(1)+' 週）、下學期 s2_w1～s2_w'+wkCount(2)+'（共 '+wkCount(2)+' 週），不可省略、不可只填前幾週。每一週都要有 unit、content、task、eval 內容；issueTags 視主題需要填入。',
     '- 每一個表現任務欄位中的描述，表現任務應是在生活或職場、學習等真實情境中的產出或行為表現，能讓學生展現課程所學。',
     '- 學習目標在認知、情意、技能都至少要提出 3 至 5 項。',
-    '- 為節省空間，每週的 content / task / eval 可寫得簡潔（每項約 30-60 字即可），但 42 週都必須填寫。',
+    '- 為節省空間，每週的 content / task / eval 可寫得簡潔（每項約 30-60 字即可），但 '+(wkCount(1)+wkCount(2))+' 週都必須填寫。',
     '- 嚴格輸出 JSON，禁止任何前後文、禁止 markdown code fence。'
   ].join('\n');
 }
@@ -3989,7 +4173,7 @@ async function runAiGenerate(){
   if(!aiKeyVerified){toast('⚠ 請先驗證 API 金鑰',3500);return;}
   var provider=document.getElementById('aiProvider').value;
   var apiKey=document.getElementById('aiApiKey').value.trim();
-  var model=document.getElementById('aiModel').value;
+  var model=getAiModel();
   var aiPromptEl=document.getElementById('aiPrompt');
   var userPrompt=(aiPromptEl.dataset&&aiPromptEl.dataset.ghost==='1')?'':aiPromptEl.value.trim();
   if(!userPrompt){toast('⚠ 請先輸入提示詞 / 課程描述',3500);return;}
@@ -4012,12 +4196,12 @@ async function runAiGenerate(){
       });
     }
     aiLog('JSON 解析成功（上學期 '+s1Cnt+' 週、下學期 '+s2Cnt+' 週），套用到表單…');
-    if(s1Cnt<21||s2Cnt<21){
+    if(s1Cnt<wkCount(1)||s2Cnt<wkCount(2)){
       aiLog('⚠ 部分週次未生成完整（建議重新生成或改用旗艦模型）','err');
     }
     applyAiData(data);
     aiLog('✅ 已套用到表單，請核對結果','ok');
-    toast('✨ AI 已自動填入內容！'+(s1Cnt<21||s2Cnt<21?'（注意：週次不滿 21 週）':''));
+    toast('✨ AI 已自動填入內容！'+(s1Cnt<wkCount(1)||s2Cnt<wkCount(2)?'（注意：部分週次未生成完整）':''));
   }catch(e){
     aiLog('❌ 失敗：'+e.message,'err');
     toast('❌ '+e.message,6000);
@@ -4098,7 +4282,7 @@ function applyAiData(data){
 
 // ── init ──────────────────────────────────────────────────────────
 // 提示詞 / 課程描述 預設範例文字（灰字提示與「複製範例」按鈕共用同一份）
-var AI_PROMPT_EXAMPLE='例如：請為一年級設計一學年的「樂學樂勇」彈性學習課程，每週 1 節，主題環繞繪本閱讀，融入家庭教育、性別平等教育、戶外教育和閱讀素養教育，並加入性別平等教育每學期6節、戶外教育每學期2節，還有家庭教育每學期2節，另外每週課程都有融入閱讀素養教育，另外也要有每學期3節有關性侵害防治與3節家庭暴力防治教育，議題之間可以重覆，同時課程每學期都是21週，課程設計以一週為一單位進行設計，每一週的課程都要包含繪本的主題，還有「引起動機」、「主要活動」和「綜合活動」。';
+var AI_PROMPT_EXAMPLE='例如：請為一年級設計一學年的「樂學樂勇」彈性學習課程，每週 1 節，主題環繞繪本閱讀，融入家庭教育、性別平等教育、戶外教育和閱讀素養教育，並加入性別平等教育每學期6節、戶外教育每學期2節，還有家庭教育每學期2節，另外每週課程都有融入閱讀素養教育，另外也要有每學期3節有關性侵害防治與3節家庭暴力防治教育，議題之間可以重覆，同時課程每學期的週數依學年度行事曆自動排定，課程設計以一週為一單位進行設計，每一週的課程都要包含繪本的主題，還有「引起動機」、「主要活動」和「綜合活動」。';
 
 // 一鍵複製預設範例文字到剪貼簿
 function copyAiExample(){
@@ -4158,6 +4342,7 @@ window.onload=function(){
       task:'完成一份「我的勇氣開學」學習單，並能上臺進行分享。',
       eval:'課堂觀察、口語表達、實作評量'
     };
+    updateWkNote();
     buildWk();
   }catch(e){console.error('buildWk failed:',e);}
 
